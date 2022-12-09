@@ -1,0 +1,43 @@
+<ion-list [inset]="true" class="ion-padding signInForm">
+  <ion-list-header>
+
+    <h2>
+
+      Sign In
+
+    </h2>
+
+  </ion-list-header>
+
+  <ion-item counter="true"
+  class="usernameItem">
+
+    <ion-label position="floating">username</ion-label>
+    <ion-input
+    type="text"
+    placeholder="username"
+    class="username"></ion-input>
+
+  </ion-item>
+  <ion-item >
+
+    <ion-label position="floating">Password</ion-label>
+    <ion-input
+    type="password"
+    placeholder="Password"
+    class="userPasscode"
+    (ionChange)="this.checkUSerNameFilled($event)"></ion-input>
+
+  </ion-item>
+  <ion-item >
+
+    <ion-button class="authButs" disabled="true"
+    (click)="this.signIn()">
+
+      Sign In
+
+    </ion-button>
+
+  </ion-item>
+
+</ion-list>

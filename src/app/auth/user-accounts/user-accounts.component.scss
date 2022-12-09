@@ -1,0 +1,27 @@
+@media all and (min-width: 600px) {
+
+    .authOpts{
+
+        width: 500px;
+        position: relative;
+        left: 50%;
+        top: 50px;
+        transform: translate(-50%);
+
+    }
+
+}
+
+ion-col{
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+.authButs{
+
+    width: 95%;
+    height: 45px;
+
+}

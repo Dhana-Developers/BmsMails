@@ -1,0 +1,20 @@
+<ion-app>
+
+  <ion-split-pane when="md" contentId="main">
+    <ion-menu contentId="main">
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>{{this.organization.getOrganization().orgName}} Menu</ion-title>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <app-bsm-nav>
+        </app-bsm-nav>
+      </ion-content>
+    </ion-menu>
+
+    <ion-router-outlet class="ion-page" id="main"></ion-router-outlet>
+
+  </ion-split-pane>
+
+</ion-app>

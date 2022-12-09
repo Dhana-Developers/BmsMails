@@ -1,0 +1,53 @@
+
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Changer Owner</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cancel()" color="danger">Close</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        Change Ownership
+      </ion-card-title>
+      <ion-card-subtitle>
+        <ion-chip>
+          <ion-avatar>
+            <img alt="{{this.selectedUser.username}}" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+          </ion-avatar>
+          <ion-label>{{this.selectedUser.firstName}} {{this.selectedUser.lastName}}</ion-label>
+          <!-- <ion-icon name="close-circle"></ion-icon> -->
+        </ion-chip>
+      </ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-label position="floating">
+          username
+        </ion-label>
+        <ion-input
+        placeholder="{{this.selectedUser.username}}"
+        (ionChange)="this.getUsername($event)">
+
+        </ion-input>
+      </ion-item>
+      <ion-button fill="clear" color="{{this.changeButtonColor}}"
+      disabled="{{this.disableBut}}" (click)="this.chageOrgOwner()">
+        Change
+      </ion-button>
+
+      <ion-list>
+        <ion-item button *ngFor="let orgUser of this.searched_Users"
+        (click)="this.selectNewOwner(orgUser.username)">
+          <ion-icon name="person" slot="start"></ion-icon>
+          <ion-label>{{orgUser.firstName}} {{orgUser.lastName}}</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>

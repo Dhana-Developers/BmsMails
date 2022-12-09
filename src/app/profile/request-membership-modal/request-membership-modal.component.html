@@ -1,0 +1,46 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Request Membership</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cancel()" color="danger">Close</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+
+
+
+  <ion-list [inset]="true" class="ion-padding memberAdditionForm">
+    <ion-list-header>
+      <h2>
+        New Member
+      </h2>
+    </ion-list-header>
+    <form novalidate>
+      <ion-item counter="true">
+
+        <ion-label position="floating">username</ion-label>
+        <ion-input
+        type="text"
+        placeholder="username"
+        maxlength="30"
+        class="usernameField"
+        value="{{this.appUser.getMainUser().username}}"
+        ></ion-input>
+
+      </ion-item>
+      <ion-item >
+
+        <ion-button class="addMemberBut"
+        (click)="this.addMember()"
+        fill="clear">
+
+          Submit
+
+        </ion-button>
+
+      </ion-item>
+    </form>
+  </ion-list>
+
+</ion-content>

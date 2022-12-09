@@ -1,0 +1,97 @@
+
+<ion-list [inset]="true" class="ion-padding sifnUpForm">
+  <ion-list-header>
+
+    <h2>
+
+      Sign Up
+
+    </h2>
+
+  </ion-list-header>
+  <form [formGroup]="ionicForm" novalidate>
+    <ion-item counter="true">
+
+      <ion-label position="floating">First name</ion-label>
+      <ion-input
+      formControlName="firstName"
+      type="text"
+      placeholder="First name"
+      maxlength="30"
+      class="firstName"
+      (ionChange)="this.createUsername()"></ion-input>
+    </ion-item>
+    <ion-item counter="true">
+
+      <ion-label position="floating">Last name</ion-label>
+      <ion-input
+      formControlName="lastName"
+      type="text"
+      placeholder="Last name"
+      maxlength="30"
+      class="lastName"
+      (ionChange)="this.createUsername()"></ion-input>
+
+    </ion-item>
+    <ion-item  class="userEmailItem">
+
+      <ion-label position="floating">Email</ion-label>
+      <ion-input
+      email
+      formControlName="userMail"
+      type="text"
+      placeholder="Email"
+      (ionChange)="this.checkEmail($event)"></ion-input>
+      <!-- <ion-note slot="helper" color="success">Will be used for verification before accessing your account</ion-note> -->
+      <ion-note slot="error">Invalid email</ion-note>
+
+    </ion-item>
+    <ion-item counter="true"
+    class="usernameItem">
+
+      <ion-label position="floating">username</ion-label>
+      <ion-input
+      formControlName="username"
+      type="text"
+      placeholder="username"
+      maxlength="150"
+      class="username"
+      (ionChange)="this.checkUserExists($event)"></ion-input>
+      <ion-note slot="helper" color="success">Should be unique</ion-note>
+      <ion-note slot="error">username exists</ion-note>
+
+    </ion-item>
+    <ion-item >
+
+      <ion-label position="floating">Password</ion-label>
+      <ion-input
+      formControlName="userPassword"
+      type="password"
+      placeholder="Password"
+      class="userPasscode"></ion-input>
+
+    </ion-item>
+    <ion-item class="confPassItem">
+
+      <ion-label position="floating">Confirm password</ion-label>
+      <ion-input
+      formControlName="confPassword"
+      type="password"
+      placeholder="Confirm password"
+      (ionChange)="this.confirmPassword($event)"></ion-input>
+      <ion-note slot="error">Password does note match</ion-note>
+
+    </ion-item>
+    <ion-item >
+
+      <ion-button class="authButs" disabled="true"
+      (click)="this.authenticate()">
+
+        Sign Up
+
+      </ion-button>
+
+    </ion-item>
+
+  </form>
+</ion-list>

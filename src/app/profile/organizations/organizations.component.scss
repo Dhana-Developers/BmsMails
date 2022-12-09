@@ -1,0 +1,44 @@
+
+.organizationDashbord{
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.orgainzationCreationForm{
+    width: 100%;
+}
+@media all and (min-width: 600px) {
+
+    .orgainzationCreationForm{
+
+        width: 400px;
+
+
+    }
+    ion-item{
+        width: 90%;
+        position: relative;
+        left: 5%;
+    }
+    ion-list-header h2{
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}
+.CreateBut{
+
+    width: 95%;
+    height: 45px;
+
+}
+.nosite{
+    display: none;
+}

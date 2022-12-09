@@ -1,0 +1,100 @@
+
+<ion-list lines="full" class="ion-padding">
+  <ion-item button (click)="this.navigateTo('profile/organizations')" disabled="{{this.appUsers.getMainUser().disableNav}}">
+    <ion-icon name="business" slot="start"></ion-icon>
+    <ion-label>
+      <p>
+        Organization
+      </p>
+      <h2>
+        {{this.sysOrganization.getOrganization().orgName}}
+      </h2>
+    </ion-label>
+  </ion-item>
+  <ion-item button (click)="this.navigateTo('profile/departments')" disabled="{{this.appUsers.getMainUser().disableNav}}">
+    <ion-icon name="people" slot="start"></ion-icon>
+    <ion-label>
+      <p>
+        Department
+      </p>
+      <h2>
+        {{this.sysDepartment.getDepartment().departmentName}}
+      </h2>
+    </ion-label>
+  </ion-item>
+  <ion-item button (click)="this.navigateTo('profile/members')" disabled="{{this.appUsers.getMainUser().disableNav}}">
+    <ion-icon name="person" slot="start"></ion-icon>
+    <ion-label>
+      <p>
+        Member
+      </p>
+      <h2>
+        {{this.appUsers.getMainUser().firstName+' '+this.appUsers.getMainUser().lastName}}
+      </h2>
+    </ion-label>
+  </ion-item>
+  <ion-item disabled="{{this.mailsService.mailAccount.disableMail}}">
+    <ion-label>
+      <ion-accordion-group>
+        <ion-accordion>
+          <ion-item slot="header" color="light">
+            <ion-icon name="mail-outline" slot="start"></ion-icon>
+            <ion-label>
+              <p>
+                Mails
+              </p>
+              <h2>
+                {{this.mailsService.mailAccount.hostLoginAddress}}
+              </h2>
+            </ion-label>
+          </ion-item>
+          <div class="ion-padding" slot="content">
+            <ion-list>
+              <ion-item button (click)="this.navigateTo('mails')"
+              class="nosite">
+                <ion-icon name="at-circle-outline" slot="start"></ion-icon>
+                <ion-label>
+                  <h2>
+                    Accounts
+                  </h2>
+                </ion-label>
+              </ion-item>
+
+              <ion-item button (click)="this.composeMail()">
+                <ion-icon name="document-text-outline" slot="start"  color="primary"></ion-icon>
+                <ion-label>
+                  <h2>
+                    Compose
+                  </h2>
+                </ion-label>
+              </ion-item>
+
+              <ion-item button *ngFor="let mailFlag of this.mailsService.mailFlags"
+              (click)="this.getMailHeads(mailFlag.flagId)">
+                <ion-icon name="{{mailFlag.flagMd}}" slot="start" color="{{mailFlag.flaColor}}"></ion-icon>
+                <ion-label>
+                  <h2 *ngIf=" mailFlag.flagName !== 'Read'">
+                    {{mailFlag.flagName}}
+                  </h2>
+                  <h2 *ngIf=" mailFlag.flagName === 'Read'">
+                    Inbox
+                  </h2>
+                </ion-label>
+                <ion-label slot="end">
+                  <h2 *ngIf=" mailFlag.flagName === 'Draft'">
+                    {{this.mailsService.systemDrafts.length}}
+                  </h2>
+                  <!-- <h2 *ngIf=" mailFlag.flagName === 'Unread'">
+                    {{this.mailsService.unreadMails.length}}
+                  </h2> -->
+                </ion-label>
+              </ion-item>
+
+            </ion-list>
+          </div>
+        </ion-accordion>
+      </ion-accordion-group>
+
+    </ion-label>
+  </ion-item>
+</ion-list>

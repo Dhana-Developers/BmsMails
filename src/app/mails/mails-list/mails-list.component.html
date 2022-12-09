@@ -1,0 +1,107 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>{{this.mailService.chosenFlag.flagName}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="mailsListContent">
+
+  <ion-card>
+
+    <ion-card-header
+    *ngIf="this.mailService.mailHeads.length===0">
+
+      No Mails In this Folder
+
+    </ion-card-header>
+
+  </ion-card>
+  <ion-card>
+
+    <ion-card-header
+    *ngIf="this.mailService.chosenFlag.flagName==='Trash' ||
+    this.mailService.chosenFlag.flagName==='Spam'">
+
+      <ion-button (click)="this.clearMailFlag()">
+        Clear {{this.mailService.chosenFlag.flagName}}
+      </ion-button>
+
+    </ion-card-header>
+
+  </ion-card>
+
+  <ion-card *ngFor="let mailHead of this.mailService.mailHeads"
+  id="hP{{mailHead.mailObjectId}}">
+
+    <ion-card-header>
+      <ion-card-title>
+        {{mailHead.mailSubject}}
+      </ion-card-title>
+      <ion-card-subtitle>
+        From: {{mailHead.sender}}  At: {{mailHead.creationTime}}
+      </ion-card-subtitle>
+      <ion-card-subtitle>
+        <ion-toolbar>
+          <ion-label color="{{this.mailService.chosenFlag.flaColor}}">
+            {{this.mailService.chosenFlag.flagName}}
+          </ion-label >
+          <ion-buttons slot="end">
+
+            <ion-button color="primary"
+            *ngIf="this.mailService.chosenFlag.flagName === 'Spam'||
+            this.mailService.chosenFlag.flagName === 'Trash' ||
+            this.mailService.chosenFlag.flagName === 'Archive'"
+            (click)="this.changeMailFlag(mailHead.mailObjectId,'Read',$event)">
+              <ion-icon slot="icon-only" name="mail-open-outline">
+              </ion-icon>
+            </ion-button>
+            <ion-button color="primary"
+            *ngIf="this.mailService.chosenFlag.flagName === 'Spam'||
+            this.mailService.chosenFlag.flagName === 'Trash' ||
+            this.mailService.chosenFlag.flagName === 'Archive'"
+            (click)="this.changeMailFlag(mailHead.mailObjectId,'Sent',$event)">
+              <ion-icon slot="icon-only" name="send-outline">
+              </ion-icon>
+            </ion-button>
+            <ion-button color="primary"
+            *ngIf="this.mailService.chosenFlag.flagName !== 'Spam'"
+            (click)="this.changeMailFlag(mailHead.mailObjectId,'Spam',$event)">
+              <ion-icon slot="icon-only" name="trash-bin-outline">
+              </ion-icon>
+            </ion-button>
+            <ion-button color="primary"
+            *ngIf="this.mailService.chosenFlag.flagName !== 'Archive'"
+            (click)="this.changeMailFlag(mailHead.mailObjectId,'Archive',$event)">
+              <ion-icon slot="icon-only" name="archive-outline">
+              </ion-icon>
+            </ion-button>
+            <ion-button color="primary"
+            *ngIf="this.mailService.chosenFlag.flagName !== 'Trash'"
+            (click)="this.changeMailFlag(mailHead.mailObjectId,'Trash',$event)">
+              <ion-icon slot="icon-only" name="trash-outline">
+              </ion-icon>
+            </ion-button>
+            <ion-button color="primary"
+            *ngIf="this.mailService.chosenFlag.flagName === 'Draft'"
+            (click)="this.editMail(mailHead.mailObjectId)">
+              <ion-icon slot="icon-only" name="document-text-outline">
+              </ion-icon>
+            </ion-button>
+            <ion-button color="primary"
+            *ngIf="this.mailService.chosenFlag.flagName !== 'Draft'"
+            (click)="this.readMail(this.mailService.chosenFlag.flagId,
+            mailHead.mailObjectId,mailHead.mailServerId,mailHead.mailHeadId)">
+              <ion-icon slot="icon-only" name="glasses-outline">
+              </ion-icon>
+            </ion-button>
+
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-card-subtitle>
+    </ion-card-header>
+
+  </ion-card>
+
+</ion-content>

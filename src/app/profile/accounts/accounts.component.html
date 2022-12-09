@@ -1,0 +1,54 @@
+
+<ion-content fullscreen="true">
+
+  <ion-card class="mailCard">
+    <ion-header>
+      <ion-card-title>
+        <h2>
+          {{this.appUsers.getMainUser().firstName.toUpperCase() + ' ' +this.appUsers.getMainUser().lastName.toUpperCase()}}
+        </h2>
+      </ion-card-title>
+    </ion-header>
+
+    <ion-card-content>
+
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>
+            <ion-searchbar
+            placeholder="Search Organization"
+            (ionChange)="this.searchOrgs($event)">
+
+            </ion-searchbar>
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+
+          <ion-button fill="clear" color="primary" class="addMembBtns"
+          *ngFor="let searchedDept of this.sysDepartments.searchedDepartments"
+          (click)="this.createRequestMebershipModal(searchedDept.departmentID)">
+            {{this.sysOrganaization.searchedOrgs[searchedDept.departmentOrganization].orgName}} >
+            {{searchedDept.departmentName}}
+          </ion-button>
+
+        </ion-card-content>
+
+      </ion-card>
+
+      <ion-button fill="clear" expand="full" class="adAccountButton accountBts nosite"
+      [routerLink]="['./organizations']">
+        <ion-icon slot="start" name="add"></ion-icon>
+        Add Orgaginzaion
+      </ion-button>
+      <ion-button fill="clear" expand="full" class="accountBts"
+      *ngFor="let memberShipDetails of this.appUsers.getMainUser().memberShips"
+      (click)="this.setMemberDetails(memberShipDetails.memberId,memberShipDetails.organizationId)">
+        {{memberShipDetails.memberId}}
+      </ion-button>
+
+
+    </ion-card-content>
+
+  </ion-card>
+
+</ion-content>

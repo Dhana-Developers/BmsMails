@@ -1,0 +1,212 @@
+
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>{{this.orgService.getOrganization().orgName}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+
+  <div class="organizationDashbord">
+
+    <ion-list [inset]="true" class=" orgainzationCreationForm">
+      <ion-list-header>
+
+        <h2>
+
+          {{this.orgService.getOrganization().orgName}}
+
+        </h2>
+
+      </ion-list-header>
+      <ion-item>
+        <ion-label>
+          <p>
+            Domain
+          </p>
+          {{this.orgService.getOrganization().orgDomain}}
+        </ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>
+          <p>
+            Mail Server
+          </p>
+          {{this.orgService.getOrganization().orgMailServer}}
+        </ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>
+          <p>
+            Owner
+          </p>
+          {{this.orgService.getOrganization().orgCreator}}
+          <ion-label>
+            <ion-button fill="clear" color="primary" slot="end"
+            *ngIf="this.users.getMainUser().username === this.orgService.getOrganization().orgCreator"
+            (click)="this.createChangeOwnerModal()">
+              Change Owner
+            </ion-button>
+          </ion-label>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+
+      <ion-list [inset]="true" class="ion-padding orgainzationCreationForm">
+        <ion-list-header>
+
+          <h2>
+
+            Departments
+
+          </h2>
+
+        </ion-list-header>
+        <ion-item *ngFor="let orgDept of this.orgService.orgDepartments">
+          <ion-label>
+            <p>
+              {{orgDept.departmentID}}
+            </p>
+            {{orgDept.departmentName}}
+          </ion-label>
+          <ion-button *ngIf="this.orgService.getOrganization().orgCreator ===
+          this.users.getMainUser().username"
+          (click)="this.getDepartmentDetails(orgDept.departmentID,orgDept.departmentName)">
+            View
+          </ion-button>
+        </ion-item>
+      </ion-list>
+
+    <ion-list [inset]="true" class="ion-padding orgainzationCreationForm"
+    class="nosite">
+      <ion-list-header>
+
+        <h2>
+
+          Resources
+
+        </h2>
+
+      </ion-list-header>
+      <ion-item>
+        <ion-label>
+          <p>
+            Resource
+          </p>
+          Resource Name
+        </ion-label>
+      </ion-item>
+    </ion-list>
+
+    <ion-list [inset]="true" class="ion-padding orgainzationCreationForm"
+    class="nosite">
+      <ion-list-header>
+
+        <h2>
+
+          New Organization
+
+        </h2>
+
+      </ion-list-header>
+
+      <form novalidate>
+        <ion-item counter="true">
+
+          <ion-label position="floating">Organization Name</ion-label>
+          <ion-input
+          type="text"
+          placeholder="Organization name"
+          maxlength="30"
+          class="organizationName"
+          (ionChange)="this.checkOrgName($event)"></ion-input>
+
+        </ion-item>
+        <ion-item counter="true">
+
+          <ion-label position="floating">Organization Domain</ion-label>
+          <ion-input
+          type="text"
+          placeholder="Organization Domain"
+          maxlength="30"
+          class="organizationDomain"
+          (ionChange)="this.checkOrgDomain($event)"></ion-input>
+
+        </ion-item>
+        <ion-item counter="true">
+
+          <ion-label position="floating">Organization Mail Server</ion-label>
+          <ion-input
+          type="text"
+          placeholder="Organization Mail Server"
+          maxlength="30"
+          class="organizationMailServer"
+          (ionChange)="this.checkOrgMailServer($event)"></ion-input>
+
+        </ion-item>
+        <ion-item >
+
+          <ion-button class="CreateOrgBut" disabled="true"
+          (click)="this.createOrg()">
+
+            Create
+
+          </ion-button>
+
+        </ion-item>
+      </form>
+
+    </ion-list>
+
+    <ion-list [inset]="true" class="ion-padding departmentCreationForm"
+    *ngIf="this.users.getMainUser().username ===
+    this.orgService.getOrganization().orgCreator">
+      <ion-list-header>
+        <h2>
+          New Department
+        </h2>
+      </ion-list-header>
+      <form novalidate>
+        <ion-item counter="true">
+
+          <ion-label position="floating">Department Name</ion-label>
+          <ion-input
+          type="text"
+          placeholder="Department name"
+          maxlength="30"
+          class="departmentName"
+          (ionChange)="this.checkDepartmentName($event)"></ion-input>
+
+        </ion-item>
+        <ion-item counter="true">
+
+          <ion-label position="floating">Department sub-domain</ion-label>
+          <ion-input
+          type="text"
+          placeholder="Department sub-domain"
+          maxlength="60"
+          class="departmentSubDomian"
+          value="{{this.orgDept.mainDepartment.departmentID}}"
+          disabled="true"
+          (ionChange)="this.checkdepId($event)"></ion-input>
+
+        </ion-item>
+        <ion-item >
+
+          <ion-button class="CreateBut" disabled="true"
+          (click)="this.createDepartment()">
+
+            Create
+
+          </ion-button>
+
+        </ion-item>
+
+      </form>
+    </ion-list>
+
+  </div>
+
+</ion-content>

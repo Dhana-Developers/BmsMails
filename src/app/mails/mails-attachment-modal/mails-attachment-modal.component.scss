@@ -1,0 +1,22 @@
+.attachmentsConts{
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+.attsButs{
+    width: 95%;
+}
+.otherAtt{
+    width: 300px;
+    height: 200px;
+    object-fit: contain;
+}
+.nosite {
+
+    display: none;
+
+}

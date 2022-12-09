@@ -1,0 +1,80 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Mail Attchments</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cancel()">Close</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <div class="attachmentsConts">
+
+    <ion-card *ngIf="this.appMails.mailSection==='Writer'">
+      <ion-card-header>
+        <ion-card-title>
+          Add Attachment
+        </ion-card-title>
+        <ion-card-subtitle>
+          <input type="file" class="nosite attFileInput"
+          (change)="this.readFile($event)">
+          <ion-button fill="clear" color="primary" class="attsButs"
+          (click)="this.openFileSelector()">
+            Add
+          </ion-button>
+        </ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card *ngFor="let mailAtt of this.appMails.mailHead.mailAttachments">
+
+      <ion-card-header>
+        <ion-card-title>
+          {{mailAtt.attName}}
+        </ion-card-title>
+        <ion-card-subtitle>
+          <ion-button fill="clear" color="danger" class="attsButs"
+          *ngIf="this.appMails.mailSection==='Writer'"
+          (click)="this.removeAtt(mailAtt.attId)">
+            Remove
+          </ion-button>
+          <a href="{{mailAtt.attLink}}" download
+          *ngIf="this.appMails.mailSection==='Reader'">
+            <ion-button fill="clear" color="success" class="attsButs">
+              Download
+            </ion-button>
+          </a>
+        </ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+
+        <ion-img
+        *ngIf="mailAtt.attType === 'image'"
+        src="{{mailAtt.attLink}}"
+        alt="{{mailAtt.attName}}">
+        </ion-img>
+
+        <video
+        *ngIf="mailAtt.attType === 'video'"
+        src="{{mailAtt.attLink}}" controls
+        width="100%" >
+        </video>
+
+        <ion-img
+        *ngIf="mailAtt.attType !== 'image'&&mailAtt.attType !== 'video'"
+        src="./assets/email.png"
+        alt="{{mailAtt.attName}}"
+        class="otherAtt">
+        </ion-img>
+
+      </ion-card-content>
+
+    </ion-card>
+
+  </div>
+
+</ion-content>

@@ -1,0 +1,110 @@
+
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>{{this.appDepartment.getDepartment().departmentName}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="departmentDashbord">
+
+    <ion-list [inset]="true" class="departmentCreationForm">
+      <ion-list-header>
+        <h2>
+          {{this.appDepartment.getDepartment().departmentName}}
+        </h2>
+      </ion-list-header>
+      <ion-item>
+
+        <ion-label>
+          <p>
+            Department Domain
+          </p>
+          <ion-label>
+            {{this.appDepartment.getDepartment().departmentID}}
+          </ion-label>
+        </ion-label>
+
+      </ion-item>
+      <ion-item>
+
+        <ion-label>
+          <p>
+            Department Organization
+          </p>
+          <ion-label>
+            {{this.appOrganization.getOrganization().orgName}}
+          </ion-label>
+        </ion-label>
+
+      </ion-item>
+    </ion-list>
+
+    <ion-list [inset]="true" class="ion-padding departmentCreationForm">
+      <ion-list-header>
+        <h2>
+          Mails
+        </h2>
+      </ion-list-header>
+      <ion-item>
+
+        <ion-label>
+          <p>
+            {{this.appDepartment.mainDepartment.departmentName}}
+          </p>
+          <ion-label>
+            <ion-button fill="clear" color="primary" class="resourceLinkBtn"
+            (click)="this.navigateToMailsList(this.appDepartment.mainDepartment.mailAccount)">
+              {{this.appDepartment.mainDepartment.mailAccount}}
+            </ion-button>
+          </ion-label>
+        </ion-label>
+
+      </ion-item>
+    </ion-list>
+
+    <ion-list [inset]="true" class="ion-padding departmentCreationForm">
+      <ion-list-header>
+        <h2>
+          Members
+        </h2>
+      </ion-list-header>
+      <ion-item *ngFor="let departmentMember of this.appDepartment.getDepartment().departmentMembers">
+          <ion-card>
+            <ion-card-header>
+              <ion-card-title>
+                {{departmentMember.memberName}}
+              </ion-card-title>
+              <ion-card-subtitle>
+                {{departmentMember.memberId}}
+              </ion-card-subtitle>
+            </ion-card-header>
+            <ion-card-content
+            *ngIf="this.appUser.getMainUser().username === this.appOrganization.getOrganization().orgCreator">
+              <ion-item>
+                <ion-select placeholder="{{departmentMember.memberStatus}}"
+                style="width: 100%;" (ionChange)="this.changeMemberStatus(
+                  departmentMember.memberId,$event)">
+                  <ion-select-option value="{{departmentMember.memberStatus}}" class="cnvContsOpts">
+                    {{departmentMember.memberStatus}}
+                  </ion-select-option>
+                  <ion-select-option value="Pending" class="cnvContsOpts"
+                  *ngIf="departmentMember.memberStatus!=='Pending'">
+                    Pending
+                  </ion-select-option>
+                  <ion-select-option value="Activate" class="cnvContsOpts"
+                  *ngIf="departmentMember.memberStatus!=='Activate'">
+                    Activate
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
+            </ion-card-content>
+          </ion-card>
+      </ion-item>
+    </ion-list>
+
+  </div>
+</ion-content>

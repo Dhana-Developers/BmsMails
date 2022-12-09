@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Oganization Name</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-card>
+
+    <ion-card-header>
+
+      <ion-card-title>
+
+        <ion-toolbar>
+
+          <ion-buttons slot="end">
+
+            <ion-button color="primary"
+            (click)="this.createAttachmentModal()">
+              <ion-icon name="attach-outline" slot="icon-only"></ion-icon>
+            </ion-button>
+
+          </ion-buttons>
+
+        </ion-toolbar>
+
+      </ion-card-title>
+
+      <ion-card-title>
+        {{this.appMails.mailHead.mailSubject}}
+      </ion-card-title>
+
+      <ion-card-subtitle>
+        Sender: {{this.appMails.mailHead.sender}}, At: {{this.appMails.mailHead.creationTime}}
+      </ion-card-subtitle>
+
+    </ion-card-header>
+
+    <ion-card-content class="mailContent">
+    </ion-card-content>
+
+  </ion-card>
+
+</ion-content>

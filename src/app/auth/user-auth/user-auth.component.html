@@ -1,0 +1,15 @@
+<ion-content [fullscreen]="true">
+
+  <app-sign-up *ngIf="this.routSect === '' || this.routSect === '/auth/signUp'; else signIn">
+
+  </app-sign-up>
+
+  <ng-template #signIn>
+
+    <app-sign-in>
+
+    </app-sign-in>
+
+  </ng-template>
+
+</ion-content>

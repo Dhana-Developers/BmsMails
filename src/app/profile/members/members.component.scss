@@ -1,0 +1,52 @@
+
+.membersDashboard{
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+.memberAdditionForm{
+
+    width: 100%;
+
+
+}
+@media all and (min-width: 600px) {
+
+    .memberAdditionForm{
+
+        width: 400px;
+
+
+    }
+    ion-item{
+        width: 90%;
+        position: relative;
+        left: 5%;
+    }
+    ion-list-header h2{
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}
+.addMemberBut{
+
+    width: 95%;
+    height: 45px;
+
+}
+.resourceLinkBtn{
+    width: 95%;
+    height: 45px;
+}
+.noSite{
+
+    display: none;
+
+}
