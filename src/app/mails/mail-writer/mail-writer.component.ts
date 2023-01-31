@@ -552,6 +552,16 @@ export class MailWriterComponent implements OnInit,AfterViewInit {
   }
 
   sendMail():void{
+    let flagId = 0;
+    this.mailService.mailFlags.forEach((mailFlag: MailFlag) =>{
+
+      if (mailFlag.flagName === 'Sent'){
+
+        flagId = mailFlag.flagId
+
+      }
+
+    })
 
     const sendMailForm: FormData = new FormData()
 
@@ -576,6 +586,7 @@ export class MailWriterComponent implements OnInit,AfterViewInit {
     sendMailForm.append('cc',JSON.stringify(this.mailService.mailHead.mailCc))
     sendMailForm.append('bcc',JSON.stringify(this.mailService.mailHead.mailBcc))
     sendMailForm.append('objId',JSON.stringify(this.mailService.mailObject.mailObjectId))
+    sendMailForm.append('mailFlagId',JSON.stringify(flagId))
 
     const receivers = this.mailService.mailHead.mailReceipients.concat(
       this.mailService.mailHead.mailCc,this.mailService.mailHead.mailBcc

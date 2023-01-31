@@ -12,6 +12,7 @@ import { IonicModule } from '@ionic/angular';
 import { ReusablesModule } from '../reusables/reusables.module';
 import { ChangeOwnerModalComponent } from './change-owner-modal/change-owner-modal.component';
 import { RequestMembershipModalComponent } from './request-membership-modal/request-membership-modal.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import { RequestMembershipModalComponent } from './request-membership-modal/requ
     OrganizationsComponent,
     VerificationComponent,
     ChangeOwnerModalComponent,
-    RequestMembershipModalComponent
+    RequestMembershipModalComponent,
+    ResetPasswordComponent
   ],
   imports: [
     CommonModule,

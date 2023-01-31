@@ -29,15 +29,15 @@ export class SignInComponent implements OnInit {
   ngOnInit() {}
 
 
-  checkUSerNameFilled(evt: any): void{
+  checkUSerNameFilled(): void{
 
     const username: string = this.eleRef.nativeElement.querySelector('.username').value;
     const authButs: any = this.eleRef.nativeElement.querySelector('.authButs')
-    const userPassowrd: string= evt.target.value;
+    const userPassowrd: string= this.eleRef.nativeElement.querySelector('.userPasscode').value;
 
     const username_pair: Array<string> = username.split('_')
 
-    if (username != ''|| userPassowrd!= ''){
+    if (username != '' && userPassowrd!= ''){
 
       this.username = username;
       this.password = userPassowrd;
@@ -92,6 +92,10 @@ export class SignInComponent implements OnInit {
           }else{
 
             if (authResp.state === 5){
+
+              this.userService.setMainUser(authResp,false)
+
+              this.userService.setMemberShips(authResp.memberShips)
 
               const forgotPassLabel: any = this.eleRef.nativeElement.querySelector('.forgotPassLabel');
 
@@ -160,6 +164,12 @@ export class SignInComponent implements OnInit {
       })
 
     })
+
+  }
+
+  resetPassword(){
+
+    this.appRouter.navigateByUrl('profile/resetPassword')
 
   }
 

@@ -16,7 +16,8 @@
     <ion-input
     type="text"
     placeholder="username"
-    class="username"></ion-input>
+    class="username"
+    (ionChange)="this.checkUSerNameFilled()"></ion-input>
 
   </ion-item>
   <ion-item >
@@ -26,7 +27,7 @@
     type="password"
     placeholder="Password"
     class="userPasscode"
-    (ionChange)="this.checkUSerNameFilled($event)"></ion-input>
+    (ionChange)="this.checkUSerNameFilled()"></ion-input>
 
   </ion-item>
   <ion-item >
@@ -41,7 +42,8 @@
   </ion-item>
   <ion-item >
 
-    <ion-label color="warning" class="forgotPassLabel nosite">
+    <ion-label color="warning" class="forgotPassLabel nosite"
+    (click)="this.resetPassword()">
       Forgot password?
     </ion-label>
 

@@ -65,15 +65,22 @@ export class UserService {
     })
   }
 
-  setMainUser(userDetails:any){
+  setMainUser(userDetails:any,authorized?:boolean){
+
+    if (authorized === undefined){
+      this.mainUser.autheticated = true;
+    }else if (authorized === false){
+      this.mainUser.autheticated = false;
+    }
+
     this.mainUser.authState = userDetails.state;
-    this.mainUser.autheticated = true;
     this.mainUser.dateJoined = new Date(userDetails.dateJoined);
     this.mainUser.lastLogin = new Date(userDetails.lastLogin);
     this.mainUser.username = userDetails.username;
     this.mainUser.emailAddress = userDetails.emailAddress;
     this.mainUser.firstName = userDetails.firstName;
     this.mainUser.lastName = userDetails.lastName;
+
   }
 
   enableNav(){

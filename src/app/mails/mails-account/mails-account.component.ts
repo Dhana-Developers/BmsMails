@@ -163,9 +163,6 @@ export class MailsAccountComponent implements OnInit {
 
   }
 
-
-
-
   showLoader(message:string): Promise<HTMLIonLoadingElement>{
 
     return new Promise<HTMLIonLoadingElement>((resolve) => {

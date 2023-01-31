@@ -5,6 +5,7 @@ import { AccountsComponent } from './accounts/accounts.component';
 import { DepartmentsComponent } from './departments/departments.component';
 import { MembersComponent } from './members/members.component';
 import { OrganizationsComponent } from './organizations/organizations.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { VerificationComponent } from './verification/verification.component';
 
 const routes: Routes = [
@@ -31,6 +32,10 @@ const routes: Routes = [
   {
     path:'accounts',
     component:AccountsComponent
+  },
+  {
+    path:'resetPassword',
+    component:ResetPasswordComponent
   }
 ];
 
