@@ -12,7 +12,15 @@
 
     <ion-card-content>
 
-      <ion-card>
+      <ion-button fill="clear" expand="full" class="adAccountButton accountBts"
+      *ngIf="this.appUsers.getMainUser().memberShips.length === 0"
+      (click)="this.navigateTo('profile/organizations')">
+        <ion-icon slot="start" name="add"></ion-icon>
+        Create Orgaginzaion
+      </ion-button>
+
+      <ion-card
+      *ngIf="this.appUsers.getMainUser().memberShips.length === 0">
         <ion-card-header>
           <ion-card-title>
             <ion-searchbar
@@ -35,17 +43,11 @@
 
       </ion-card>
 
-      <ion-button fill="clear" expand="full" class="adAccountButton accountBts nosite"
-      [routerLink]="['./organizations']">
-        <ion-icon slot="start" name="add"></ion-icon>
-        Add Orgaginzaion
-      </ion-button>
       <ion-button fill="clear" expand="full" class="accountBts"
-      *ngFor="let memberShipDetails of this.appUsers.getMainUser().memberShips"
-      (click)="this.setMemberDetails(memberShipDetails.memberId,memberShipDetails.organizationId)">
-        {{memberShipDetails.memberId}}
+      *ngFor="let profileLink of this.appUsers.getMainUser().memberShips"
+      (click)="this.setMembership(profileLink)">
+        {{profileLink}}
       </ion-button>
-
 
     </ion-card-content>
 

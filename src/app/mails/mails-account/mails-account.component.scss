@@ -1,19 +1,5 @@
-.mailAccountButs{
-
-    width: 95%;
-    height: 70px;
-    position: relative;
-    left: 2.5%;
-
-}
-ion-card{
-    position: relative;
-    top: 50px;
-}
-@media all and (min-width: 600px) {
-    ion-card{
-        width: 500px;
-        left: 50%;
-        transform: translate(-50%);
-    }
+.creatAccountBut{
+    width: 100%;
+    height: 45px;
+    margin-top: 15px;
 }

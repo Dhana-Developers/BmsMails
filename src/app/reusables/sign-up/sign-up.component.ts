@@ -6,6 +6,7 @@ import { LoadingController } from '@ionic/angular';
 import { AlertController } from '@ionic/angular';
 
 import { UserService } from 'src/app/base-services/user/user.service';
+import { HttpService } from 'src/app/base-services/comms/http/http.service';
 
 @Component({
   selector: 'app-sign-up',
@@ -19,6 +20,7 @@ export class SignUpComponent implements OnInit {
   private userMail='';
   private username='';
   private userPassword='';
+  private userExists=true;
 
   public ionicForm!:FormGroup
 
@@ -28,7 +30,8 @@ export class SignUpComponent implements OnInit {
     public formBuilder: FormBuilder,
     private appRouter: Router,
     private loadingController: LoadingController,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private appHttp: HttpService
   ) { }
 
   ngOnInit() {
@@ -46,43 +49,54 @@ export class SignUpComponent implements OnInit {
 
   authenticate(): void{
 
-    const userAuth: AuthDetails={
-      username: this.username,
-      password: this.userPassword,
-      emailAddress:this.userMail,
-      firstName: this.firstName,
-      lastName: this.lastName
-    }
-
     this.showLoader('Signing You Up').then((loaderEle: HTMLIonLoadingElement) =>{
 
+      const signUpFormData = new FormData();
 
-      this.userService.authenticate(userAuth).then((resp: User)=>{
+      signUpFormData.append('firstName',this.firstName);
+      signUpFormData.append('lastName',this.lastName);
+      signUpFormData.append('userEmail',this.userMail);
+      signUpFormData.append('username',this.username);
+      signUpFormData.append('password',this.userPassword);
 
-        if (resp.authState === 2){
+      this.appHttp.postHttp(signUpFormData,'/orgProfile/signUp').then((signUpResp: any) =>{
+
+
+        if(signUpResp.state === 2){
+
+          this.userService.getMainUser().authState = signUpResp.state
+          this.userService.getMainUser().autheticated=false
+          this.userService.getMainUser().dateJoined = new Date(signUpResp.dateJoined)
+          this.userService.getMainUser().lastLogin = new Date(signUpResp.lastLogin)
+          this.userService.getMainUser().emailAddress = signUpResp.emailAddress
+          this.userService.getMainUser().firstName = signUpResp.firstName
+          this.userService.getMainUser().lastName = signUpResp.lastName
+          this.userService.getMainUser().username = signUpResp.username
 
           loaderEle.dismiss()
-          this.appRouter.navigateByUrl('profile')
 
-        }else{
+          this.showAlert('Sign Up','Successfully signed up').then((htmlResp: HTMLIonAlertElement) =>{
 
-          this.showAlert('Sign Up','Sign Up Failed')
+            htmlResp.onDidDismiss().then(()=>{
+
+              this.appRouter.navigateByUrl('/profile');
+
+            });
+
+          });
 
         }
 
       }).catch((err: any) =>{
 
-        loaderEle.dismiss()
-
-        this.showAlert('Sign Up','Sign up failed. Check your network and try again')
-
         console.error(err);
 
-      });
+        loaderEle.dismiss()
 
+        this.showAlert('Sign Up','Error occured while signing you up, please try again.')
+      })
 
     })
-
 
   }
 
@@ -132,8 +146,11 @@ export class SignUpComponent implements OnInit {
 
       if (exists){
 
-        usernameItem.classList.add('ion-invalid')
+        usernameItem.classList.add('ion-invalid');
+        this.userExists=true;
 
+      }else{
+        this.userExists=false;
       }
 
     }).catch((err: any) =>{
@@ -178,15 +195,16 @@ export class SignUpComponent implements OnInit {
       authButs.disabled=true;
 
     }else{
-
-      this.userPassword=confirmPassword;
-      authButs.disabled=false;
+      if (!this.userExists){
+        this.userPassword=confirmPassword;
+        authButs.disabled=false;
+      };
 
     }
 
   }
 
-  showLoader(message:string): Promise<HTMLIonLoadingElement>{
+  showLoader(message:string,profUrl?:string): Promise<HTMLIonLoadingElement>{
 
     return new Promise<HTMLIonLoadingElement>((resolve) => {
 

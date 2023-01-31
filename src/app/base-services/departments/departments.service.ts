@@ -12,10 +12,12 @@ export class DepartmentsService {
     departmentOrganization: '',
     state: 0,
     departmentMembers: [],
-    mailAccount: ''
+    mailAccount: '',
+    recruiting: false
   }
 
   public searchedDepartments: Array<Department>=[]
+  public mailAccounts: Array<MailAccount>=[]
 
   constructor(
     private appHttp: HttpService
@@ -32,7 +34,7 @@ export class DepartmentsService {
       editDepartmentForm.append('departmentName',departmentDetails.departmentName)
       editDepartmentForm.append('orgDomain',depOrg.orgDomain)
 
-      this.appHttp.postHttp(editDepartmentForm,'/bmsBase/editDepartment').then((resp: any) =>{
+      this.appHttp.postHttp(editDepartmentForm,'/orgProfile/editDepartment').then((resp: any) =>{
 
         this.mainDepartment.departmentID=resp.departmentId
         this.mainDepartment.departmentName=resp.departmentName

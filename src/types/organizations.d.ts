@@ -6,7 +6,7 @@ declare global {
 
         orgDomain: string,
         orgName: string,
-        orgMailServer: string,
+        orgMailServer: string,//deprecated
         orgCreator: string,
         state: number,
 

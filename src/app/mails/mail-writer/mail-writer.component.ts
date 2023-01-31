@@ -493,8 +493,6 @@ export class MailWriterComponent implements OnInit,AfterViewInit {
 
         const bodyParas: Array<string>=porcessedBody.split('\n')
 
-        if (this.wordCounter > 2){
-
           this.mailService.mailBody.mailBodyParay=bodyParas
 
           this.appStorage.get('drafts').then((systemDrafts:Array<Draft>) =>{
@@ -541,10 +539,6 @@ export class MailWriterComponent implements OnInit,AfterViewInit {
 
           })
 
-          this.wordCounter=0
-
-        }
-
         if(!this.bodyInit){
 
           evt.target.value = this.mailService.mailBody.mailBodyPayload
@@ -552,9 +546,6 @@ export class MailWriterComponent implements OnInit,AfterViewInit {
           this.bodyInit=true
 
         }
-
-        this.wordCounter+=1
-        this.currentWords+=1
 
     }
 
@@ -572,9 +563,11 @@ export class MailWriterComponent implements OnInit,AfterViewInit {
 
     })
 
-    sendMailForm.append('memberId',this.mailService.mailAccount.hostLoginAddress)
+    sendMailForm.append('address',this.mailService.mailAccount.hostLoginAddress)
+    sendMailForm.append('subdomain',this.department.getDepartment().departmentID)
+    sendMailForm.append('profileLink',this.members.getMainMember().memberId)
+    sendMailForm.append('accountType',this.mailService.mailAccount.accountType)
     sendMailForm.append('paras',JSON.stringify(this.mailService.mailBody.mailBodyParay))
-    sendMailForm.append('organizationName',this.organization.getOrganization().orgName)
     sendMailForm.append('attachments',JSON.stringify(attmtLink))
     sendMailForm.append('receivers',JSON.stringify(this.mailService.mailHead.mailReceipients.concat(
       this.mailService.mailHead.mailCc,this.mailService.mailHead.mailBcc

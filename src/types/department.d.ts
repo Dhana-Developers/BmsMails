@@ -9,6 +9,8 @@ declare global{
         departmentMembers: Array<any>,
         state: number,
         mailAccount: string
+        recruiting?: boolean,
+        departmentMailAccounts?: Array<MailAccount>
     }
 
 }

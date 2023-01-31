@@ -11,7 +11,7 @@ declare global {
         dateJoined?: Date,
         lastLogin?: Date,
         authState: number,
-        memberShips: Array<Membership>,
+        memberShips: Array<string>,
         disableNav?:boolean
     }
 

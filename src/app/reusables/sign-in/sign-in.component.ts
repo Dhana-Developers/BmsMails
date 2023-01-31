@@ -5,6 +5,7 @@ import { LoadingController } from '@ionic/angular';
 import { AlertController } from '@ionic/angular';
 
 import { UserService } from 'src/app/base-services/user/user.service';
+import { HttpService } from 'src/app/base-services/comms/http/http.service';
 
 @Component({
   selector: 'app-sign-in',
@@ -21,7 +22,8 @@ export class SignInComponent implements OnInit {
     private userService: UserService,
     private appRouter: Router,
     private loadingController: LoadingController,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private appHttp: HttpService
   ) { }
 
   ngOnInit() {}
@@ -57,37 +59,61 @@ export class SignInComponent implements OnInit {
 
     if (this.username!== ''&& this.password!==''){
 
-      const userAuth: AuthDetails={
-        username: this.username,
-        password: this.password
-      };
+      this.showLoader('Signing In').then((loaderEle: HTMLIonLoadingElement) =>{
 
-      this.showLoader('Authenticating').then((loaderEle: HTMLIonLoadingElement) =>{
+        const signInForm = new FormData();
+        signInForm.append('username',this.username);
+        signInForm.append('password',this.password);
 
+        this.appHttp.postHttp(signInForm,'/orgProfile/signIn').then((authResp: any) =>{
 
-        this.userService.authenticate(userAuth).then((sysMainUser: User)=>{
+          loaderEle.dismiss();
 
-          if (sysMainUser.autheticated){
+          if(authResp.state !== 0 && authResp.state !== 5){
 
-            this.appRouter.navigateByUrl('profile')
+            this.userService.setMainUser(authResp)
+
+            if (authResp.state===4){
+
+              this.userService.setMemberShips(authResp.memberShips)
+
+            }
+
+            this.showAlert('Sign In','Successfully signed in.').then((alertEle: HTMLIonAlertElement) =>{
+
+              alertEle.onDidDismiss().then(()=>{
+
+                this.appRouter.navigateByUrl('/profile/accounts')
+
+              });
+
+            });
 
           }else{
 
-            this.showAlert('Sign In','Authentication Failed')
+            if (authResp.state === 5){
 
+              const forgotPassLabel: any = this.eleRef.nativeElement.querySelector('.forgotPassLabel');
+
+              forgotPassLabel.classList.remove('nosite');
+
+            }
+
+            this.showAlert('Sign In','Wrong credentials.')
           }
 
-          loaderEle.dismiss()
-
         }).catch((err: any) =>{
-
-          loaderEle.dismiss()
-
-          this.showAlert('Sign In','Authentication failed. Check your network and try again')
+          loaderEle.dismiss();
+          this.showAlert('Sign In','Connection problem, please try again.')
+          console.error(err);
 
         })
 
       })
+
+    }else{
+
+      this.showAlert('Sign In', 'Please fill all the fields');
 
     }
 

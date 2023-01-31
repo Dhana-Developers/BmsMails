@@ -10,8 +10,10 @@ import { OrganizationService } from 'src/app/base-services/organization/organiza
 import { DepartmentsService } from 'src/app/base-services/departments/departments.service';
 
 import { HttpService } from 'src/app/base-services/comms/http/http.service';
+import { MailsService } from 'src/app/base-services/mails/mails.service';
 
 import { ChangeOwnerModalComponent } from '../change-owner-modal/change-owner-modal.component';
+import { MailsSeverComponent } from 'src/app/mails/mails-sever/mails-sever.component';
 
 @Component({
   selector: 'app-organizations',
@@ -46,7 +48,8 @@ export class OrganizationsComponent implements OnInit {
     private appHttp: HttpService,
     private mdlCtr: ModalController,
     private loadingController:LoadingController,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    public mails: MailsService
   ) { }
 
   ngOnInit() {
@@ -77,35 +80,17 @@ export class OrganizationsComponent implements OnInit {
 
   checkOrgDomain(evt: any): void{
 
+    const createBut: any = this.eleRef.nativeElement.querySelector('.CreateOrgBut');
+
     if (evt.target.value !== ''){
 
-      const organizationMailServer:any = this.eleRef.nativeElement.querySelector('.organizationMailServer')
       this.orgDetails.orgDomain=evt.target.value
-      const mailServer: string = 'mail.'+evt.target.value
-
-      organizationMailServer.value = mailServer;
+      createBut.disabled=false;
 
     }else{
 
       this.orgDetails.orgDomain=''
-
-    }
-
-  }
-
-  checkOrgMailServer(evt: any): void{
-
-    if (evt.target.value!==''){
-
-      this.orgDetails.orgMailServer=evt.target.value
-
-      const createBut: any = this.eleRef.nativeElement.querySelector('.CreateBut');
-      createBut.disabled=false;
-
-
-    }else{
-
-      this.orgDetails.orgMailServer=''
+      createBut.disabled=true;
 
     }
 
@@ -115,22 +100,47 @@ export class OrganizationsComponent implements OnInit {
 
     if (
       this.orgDetails.orgDomain!==''&&
-      this.orgDetails.orgMailServer!==''&&
       this.orgDetails.orgName!==''){
 
-        this.orgService.editOrg(this.orgDetails,this.users.getMainUser()).then((eitOrResp: Organization)=>{
+        this.showLoader('Creating Organizatio').then((orgLoader: HTMLIonLoadingElement) =>{
 
-          if (eitOrResp.state >=1){
 
-            this.appRouter.navigateByUrl('profile/departments')
+          this.orgService.editOrg(this.orgDetails,this.users.getMainUser()).then((eitOrResp: Organization)=>{
 
-          }
+            orgLoader.dismiss();
 
-        }).catch((err: any) =>{
+            if (eitOrResp.state =1){
 
-          console.error(err);
+              this.showAlert('Created Organization successfully.').then((orgAlertEle: HTMLIonAlertElement) =>{
 
-        })
+                orgAlertEle.onDidDismiss().then(() =>{
+
+                  const departmentCreationForm: any = this.eleRef.nativeElement.querySelector('.departmentCreationForm');
+
+                  departmentCreationForm.classList.remove('nosite');
+
+                  const creatOrgForm: any = this.eleRef.nativeElement.querySelector('.creatOrgForm');
+                  creatOrgForm.classList.add('nosite');
+
+                })
+
+              });
+
+            }else{
+
+              this.showAlert('Error creating organization.');
+
+            }
+
+          }).catch((err: any) =>{
+
+            orgLoader.dismiss();
+            this.showAlert('Error creating organization. Please try again');
+            console.error(err);
+
+          })
+
+        });
 
       }
 
@@ -142,16 +152,26 @@ export class OrganizationsComponent implements OnInit {
 
     getDepartmentDetailsForm.append('departmentId',departmentId)
 
-    this.appHttp.postHttp(getDepartmentDetailsForm,'/bmsBase/getDepartmentDetails').then((resp: any) =>{
+    this.appHttp.postHttp(getDepartmentDetailsForm,'/orgProfile/getDepartmentDetails').then((resp: any) =>{
 
       const orgDept: Department={
-        departmentID: departmentId,
-        departmentName: departmentName,
-        departmentOrganization: resp.organization,
+        departmentID: resp.subdomain,
+        departmentName: resp.name,
+        departmentOrganization: this.orgService.getOrganization().orgDomain,
         departmentMembers: resp.departmentMembers,
         state: 0,
-        mailAccount: resp.departmentMail
+        mailAccount: ''
       }
+
+      resp.departmentMails.forEach((departmentMail: any) => {
+
+        const appMailAccount: MailAccount={
+          hostLoginAddress: departmentMail.address,
+          name: departmentMail.name,
+          accountType: departmentMail.accountType
+        }
+        this.orgDept.mailAccounts.push(appMailAccount);
+      });
 
       this.orgDept.setDepartment(orgDept)
       this.appRouter.navigateByUrl('profile/departments')
@@ -205,9 +225,18 @@ export class OrganizationsComponent implements OnInit {
 
         this.orgDept.mainDepartment = resp
 
-        if (this.orgDept.mainDepartment.state >=1){
+        if (this.orgDept.mainDepartment.state ===1){
 
-          this.showAlert('Department Created')
+          loaderCtrl.dismiss()
+          this.showAlert('Department Created').then((creatDeptAlert: HTMLIonAlertElement) =>{
+
+            creatDeptAlert.onDidDismiss().then(() =>{
+
+              this.appRouter.navigateByUrl('/profile/accounts')
+
+            })
+
+          })
 
         }else{
 
@@ -219,7 +248,7 @@ export class OrganizationsComponent implements OnInit {
 
         loaderCtrl.dismiss()
 
-        this.showAlert('Department Creation Failed')
+        this.showAlert('Department Creation Failed. Please Try again')
 
         console.error(err);
 
@@ -278,6 +307,18 @@ export class OrganizationsComponent implements OnInit {
       })
 
     })
+
+  }
+
+  mailServer(mode?:string){
+
+    this.mdlCtr.create({
+      component: MailsSeverComponent
+    }).then((paymentMdl: HTMLIonModalElement) => {
+
+      paymentMdl.present();
+
+    });
 
   }
 

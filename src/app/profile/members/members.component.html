@@ -8,7 +8,7 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <div class="membersDashboard">
+  <div class="membersDashboard ion-padding">
 
     <ion-list [inset]="true" class="memberAdditionForm">
       <ion-list-header>
@@ -50,40 +50,40 @@
 
       </ion-item>
 
-      <ion-item>
-        <ion-label>
-
-          <p>
-            Organization Mail
-          </p>
-          {{this.member.getMainMember().memberId}}
-        </ion-label>
-
-      </ion-item>
-
     </ion-list>
+
+
 
     <ion-list [inset]="true" class="ion-padding memberAdditionForm">
       <ion-list-header>
         <h2>
-          Mails
+          Resources
         </h2>
       </ion-list-header>
-
       <ion-item>
-
         <ion-label>
-          <h2>
-            {{this.userService.getMainUser().firstName}} {{this.userService.getMainUser().lastName}}
-          </h2>
-          <ion-button fill="clear" class="resourceLinkBtn"
-          (click)="this.navigateToMailsList(this.member.getMainMember().memberId)">
-            {{this.member.getMainMember().memberId}}
-          </ion-button>
+          <p>
+            Mails
+          </p>
+          <ion-label>
+            <ion-button fill="clear" color="primary" class="resourceLinkBtn"
+            (click)="this.createMailAccount('member')">
+              <ion-icon slot="start" name="add"></ion-icon>
+              Add Mail Account
+            </ion-button>
+          </ion-label>
+
+          <ion-item button *ngFor="let appMailAccount of this.member.mailAccounts"
+          (click)="this.getMailLebels(appMailAccount.accountType,appMailAccount.hostLoginAddress)">
+            <ion-label>
+              <p>
+                {{appMailAccount.hostLoginAddress}}
+              </p>
+              {{appMailAccount.name}}
+            </ion-label>
+          </ion-item>
         </ion-label>
-
       </ion-item>
-
     </ion-list>
   </div>
 </ion-content>

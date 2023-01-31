@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { Storage } from '@ionic/storage';
+import { ModalController } from '@ionic/angular';
+import { LoadingController } from '@ionic/angular';
+import { AlertController } from '@ionic/angular';
 
 import { OrganizationService } from 'src/app/base-services/organization/organization.service';
 import { DepartmentsService } from 'src/app/base-services/departments/departments.service';
@@ -24,9 +26,12 @@ export class MailsAccountComponent implements OnInit {
     public appMemb: MembersService,
     public appUser: UserService,
     public appRouter: Router,
-    private appMails: MailsService,
+    public appMails: MailsService,
     private appHttp: HttpService,
-    private appStorage: Storage
+    private modalCtrl: ModalController,
+    private eleRef: ElementRef,
+    private loadingController: LoadingController,
+    private alertCtrl: AlertController
   ) { }
 
   ngOnInit() {
@@ -39,35 +44,11 @@ export class MailsAccountComponent implements OnInit {
 
   }
 
-  navigateToMailsList(mailAccount: string): void{
+  cancel(){
 
-    this.appHttp.getHttp('/mails/').then((systeMailFlags: any) =>{
-
-      this.appStorage.get('drafts').then((systemDrafts: Array<Draft>) =>{
-
-        this.appMails.systemDrafts = []
-
-        systemDrafts.forEach((systemDraft: Draft) =>{
-
-          this.appMails.systemDrafts.push(systemDraft);
-
-        })
-
-      })
-
-      this.appMails.mailAccount.hostLoginAddress = mailAccount
-      this.appMails.mailAccount.disableMail = false;
-
-      this.appMails.createMailFlags(systeMailFlags).then(()=>{
-
-        this.getMailHeads(this.appMails.chosenFlag.flagId)
-
-      })
-
-    })
+    return this.modalCtrl.dismiss(null, 'cancel');
 
   }
-
 
 
   getMailHeads(flagId: number):void{
@@ -116,6 +97,114 @@ export class MailsAccountComponent implements OnInit {
     }).catch((err: any) =>{
 
       console.error(err);
+
+    })
+
+  }
+
+  createMailAccount(){
+
+    const accName: string = this.eleRef.nativeElement.querySelector('.accountNameIpt').value;
+    const accAddress: string = this.eleRef.nativeElement.querySelector('.accountAddressIpt').value;
+    const accPass: string = this.eleRef.nativeElement.querySelector('.accountPasswordIpt').value;
+    const accServer: string = this.eleRef.nativeElement.querySelector('.accountServer').value;
+    const domain: string = this.appOrg.getOrganization().orgDomain;
+    const subdomain: string = this.appDep.getDepartment().departmentID;
+    const profileLink: string = this.appMemb.getMainMember().memberId;
+    const accountType: string = this.appMails.mailAccountType;
+
+    if (accName !== '' && accAddress!== '' && accPass !== ''){
+
+      const accountCreationForm: FormData = new FormData()
+
+      accountCreationForm.append('name',accName)
+      accountCreationForm.append('address',accAddress)
+      accountCreationForm.append('password',accPass)
+      accountCreationForm.append('domain',domain)
+      accountCreationForm.append('subdomain',subdomain)
+      accountCreationForm.append('profileLink',profileLink)
+      accountCreationForm.append('accountType',accountType)
+      accountCreationForm.append('serverAddress',accServer)
+
+      this.showLoader('Creating Account').then((loadingEle: HTMLIonLoadingElement) =>{
+
+        this.appHttp.postHttp(accountCreationForm,'/mails/createMailAccount').then((accountCreationResp: any) =>{
+
+          loadingEle.dismiss()
+
+          if (accountCreationResp.status === 0){
+
+            this.showAlert('Account Creation','Account creation failed.')
+
+          }else if (accountCreationResp.status === 1){
+
+            this.showAlert('Account Creation','Successfully created Member Mail account')
+          }else if (accountCreationResp.status === 2){
+
+            this.showAlert('Account Creation','Successfully created Department Mail account')
+
+          }
+
+        }).catch((err: any) =>{
+
+          loadingEle.dismiss()
+          this.showAlert('Account Creation', 'Account creation failed, please try again.')
+          console.error(err);
+
+        })
+
+      })
+
+    }else{
+
+      this.showAlert('Account Creation','Please fill all required fields')
+
+    }
+
+  }
+
+
+
+
+  showLoader(message:string): Promise<HTMLIonLoadingElement>{
+
+    return new Promise<HTMLIonLoadingElement>((resolve) => {
+
+      this.loadingController.create({
+        message:message
+      }).then((respLoader: HTMLIonLoadingElement) =>{
+
+        respLoader.present()
+        resolve(respLoader)
+
+      })
+
+    })
+
+  }
+
+  showAlert(alertTitle:string, alertMsg: string): Promise<HTMLIonAlertElement>{
+
+    return new Promise<HTMLIonAlertElement>((resolve, reject) => {
+
+      this.alertCtrl.create({
+        header:alertTitle,
+        message: alertMsg,
+        buttons:[
+
+          {
+            text:'Ok',
+            role:'Cancel'
+          }
+
+        ]
+      }).then((alertEle: HTMLIonAlertElement) =>{
+
+        alertEle.present()
+
+        resolve(alertEle)
+
+      })
 
     })
 

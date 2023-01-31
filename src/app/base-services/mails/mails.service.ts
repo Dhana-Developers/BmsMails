@@ -5,9 +5,19 @@ import { Injectable } from '@angular/core';
 })
 export class MailsService {
 
+  private mailServer: MailServer={
+    name: '',
+    address: '',
+    domain: ''
+  }
+
+  public mailServers: Array<MailServer>=[]
+
   public mailAccount: MailAccount = {
     hostLoginAddress: '',
     disableMail: true,
+    name: '',
+    accountType: ''
   };
 
   public mdMailFlags: any = {
@@ -52,6 +62,7 @@ export class MailsService {
     flagImapName: '',
     flaColor: ''
   }
+  public mailAccountType: string = 'member';//member, department, organization
 
   constructor() { }
 
@@ -81,6 +92,22 @@ export class MailsService {
       resolve(this.mailFlags)
 
     })
+
+  }
+
+  getMainMailServer(): MailServer{
+
+    return this.mailServer
+
+  }
+
+  setMainMailServer(mailServerDetails: MailServer): MailServer{
+
+    this.mailServer.address = mailServerDetails.address
+    this.mailServer.domain = mailServerDetails.domain
+    this.mailServer.name = mailServerDetails.name
+
+    return this.mailServer
 
   }
 

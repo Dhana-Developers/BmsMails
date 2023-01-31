@@ -63,7 +63,10 @@ export class BsmNavComponent implements OnInit {
 
         const fetchMailHeadsForm: FormData = new FormData()
         fetchMailHeadsForm.append('flagId',JSON.stringify(flagId))
-        fetchMailHeadsForm.append('objectMailAccount',this.mailsService.mailAccount.hostLoginAddress)
+        fetchMailHeadsForm.append('accountType',this.mailsService.mailAccount.accountType)
+        fetchMailHeadsForm.append('profileLink',this.appMembers.getMainMember().memberId)
+        fetchMailHeadsForm.append('subdomain',this.sysDepartment.getDepartment().departmentID)
+        fetchMailHeadsForm.append('address',this.mailsService.mailAccount.hostLoginAddress)
 
         this.appHttp.postHttp(fetchMailHeadsForm,'/mails/getMailHeads').then((resp: Array<any>) =>{
 
@@ -137,86 +140,96 @@ export class BsmNavComponent implements OnInit {
 
     this.showLoader('Composing Mail').then((mailLoader: HTMLIonLoadingElement) =>{
 
-    composeMailForm.append('objectMailAccount',this.mailsService.mailAccount.hostLoginAddress)
-    composeMailForm.append('mailFlagId','2')
+      let flagId = 0;
+      this.mailsService.mailFlags.forEach((mailFlag: MailFlag) =>{
 
-    this.appHttp.postHttp(composeMailForm,'/mails/getMailObject').then((mailObjectResp:any) =>{
+        flagId = mailFlag.flagId
 
-      this.mailsService.mailObject={
-        userAccount: this.mailsService.mailAccount.hostLoginAddress,
-        mailFlag: '2',
-        mailObjectId: mailObjectResp.mail_object_id
-      }
+      })
 
-      this.mailsService.mailHead={
-        mailObjectId: mailObjectResp.mail_object_id,
-        mailSubject: '',
-        mailCc: [],
-        mailBcc: [],
-        mailReceipients: [],
-        mailAttachments: [],
-        sender: mailObjectResp.sender,
-        reply_to: mailObjectResp.reply_to,
-        creationTime: new Date(mailObjectResp.mailHeadTime)
-      }
+      composeMailForm.append('address',this.mailsService.mailAccount.hostLoginAddress)
+      composeMailForm.append('mailFlagId',JSON.stringify(flagId))
+      composeMailForm.append('accountType',this.mailsService.mailAccount.accountType)
+      composeMailForm.append('profileLink',this.appMembers.getMainMember().memberId)
+      composeMailForm.append('subdomain',this.sysDepartment.getDepartment().departmentID)
 
-      this.mailsService.mailBody={
+      this.appHttp.postHttp(composeMailForm,'/mails/getMailObject').then((mailObjectResp:any) =>{
 
-        mailBodyId: mailObjectResp.mailBodyId,
-        mailBodyParay: [],
-        mailObjectId: mailObjectResp.mail_object_id
-      }
-      this.appStorage.get('drafts').then((systemDrafts: Array<Draft>) =>{
-        this.mailsService.systemDrafts=[]
-
-        const currentDraft: Draft = {
-          mailObject: this.mailsService.mailObject,
-          mailHead: this.mailsService.mailHead,
-          mailBody: this.mailsService.mailBody
+        this.mailsService.mailObject={
+          userAccount: this.mailsService.mailAccount.hostLoginAddress,
+          mailFlag: '2',
+          mailObjectId: mailObjectResp.mail_object_id
         }
 
-        if (systemDrafts !== null){
-
-          systemDrafts.push(currentDraft)
-          this.appStorage.set('drafts', systemDrafts)
-
-          systemDrafts.forEach((systemDraft: Draft) =>{
-
-            if (systemDraft.mailHead.sender === this.mailsService.mailAccount.hostLoginAddress){
-
-              this.mailsService.systemDrafts.push(systemDraft);
-
-            }
-
-          })
-
-        }else{
-
-          this.appStorage.set('drafts', [currentDraft])
-
-          this.mailsService.systemDrafts = [currentDraft]
-
+        this.mailsService.mailHead={
+          mailObjectId: mailObjectResp.mail_object_id,
+          mailSubject: '',
+          mailCc: [],
+          mailBcc: [],
+          mailReceipients: [],
+          mailAttachments: [],
+          sender: mailObjectResp.sender,
+          reply_to: mailObjectResp.reply_to,
+          creationTime: new Date(mailObjectResp.mailHeadTime)
         }
+
+        this.mailsService.mailBody={
+
+          mailBodyId: mailObjectResp.mailBodyId,
+          mailBodyParay: [],
+          mailObjectId: mailObjectResp.mail_object_id
+        }
+        this.appStorage.get('drafts').then((systemDrafts: Array<Draft>) =>{
+          this.mailsService.systemDrafts=[]
+
+          const currentDraft: Draft = {
+            mailObject: this.mailsService.mailObject,
+            mailHead: this.mailsService.mailHead,
+            mailBody: this.mailsService.mailBody
+          }
+
+          if (systemDrafts !== null){
+
+            systemDrafts.push(currentDraft)
+            this.appStorage.set('drafts', systemDrafts)
+
+            systemDrafts.forEach((systemDraft: any) =>{
+
+              if (systemDraft.mailHead.sender === this.mailsService.mailAccount.hostLoginAddress){
+
+                this.mailsService.systemDrafts.push(systemDraft);
+
+              }
+
+            })
+
+          }else{
+
+            this.appStorage.set('drafts', [currentDraft])
+
+            this.mailsService.systemDrafts = [currentDraft]
+
+          }
+
+        }).catch((err: any) =>{
+
+          console.error(err);
+
+        })
+
+        this.mailsService.mailSection='Writer'
+
+        mailLoader.dismiss()
+
+        this.appRouter.navigateByUrl('mails/mailWriter')
 
       }).catch((err: any) =>{
+
+        mailLoader.dismiss()
 
         console.error(err);
 
       })
-
-      this.mailsService.mailSection='Writer'
-
-      mailLoader.dismiss()
-
-      this.appRouter.navigateByUrl('mails/mailWriter')
-
-    }).catch((err: any) =>{
-
-      mailLoader.dismiss()
-
-      console.error(err);
-
-    })
 
     })
 

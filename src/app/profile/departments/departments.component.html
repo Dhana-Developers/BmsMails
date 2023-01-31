@@ -9,7 +9,7 @@
 </ion-header>
 
 <ion-content>
-  <div class="departmentDashbord">
+  <div class="departmentDashbord ion-padding">
 
     <ion-list [inset]="true" class="departmentCreationForm">
       <ion-list-header>
@@ -41,28 +41,44 @@
         </ion-label>
 
       </ion-item>
+      <ion-item *ngIf="this.appOrganization.getOrganization().orgCreator ===  this.appUser.getMainUser().username">
+          <ion-checkbox checked="{{this.appDepartment.getDepartment().recruiting}}" (ionChange)="this.departmentRecruitment(this.appDepartment.getDepartment().departmentID,
+          $event)" slot="start"></ion-checkbox>
+          <ion-label>
+            Recruiting
+          </ion-label>
+      </ion-item>
     </ion-list>
 
     <ion-list [inset]="true" class="ion-padding departmentCreationForm">
       <ion-list-header>
         <h2>
-          Mails
+          Resources
         </h2>
       </ion-list-header>
       <ion-item>
-
         <ion-label>
           <p>
-            {{this.appDepartment.mainDepartment.departmentName}}
+            Mails
           </p>
           <ion-label>
             <ion-button fill="clear" color="primary" class="resourceLinkBtn"
-            (click)="this.navigateToMailsList(this.appDepartment.mainDepartment.mailAccount)">
-              {{this.appDepartment.mainDepartment.mailAccount}}
+            (click)="this.createMailAccount('department')">
+              <ion-icon slot="start" name="add"></ion-icon>
+              Add Mail Account
             </ion-button>
           </ion-label>
-        </ion-label>
 
+          <ion-item button *ngFor="let appMailAccount of this.appDepartment.mailAccounts"
+          (click)="this.getMailLebels('department',appMailAccount.hostLoginAddress)">
+            <ion-label>
+              <p>
+                {{appMailAccount.hostLoginAddress}}
+              </p>
+              {{appMailAccount.name}}
+            </ion-label>
+          </ion-item>
+        </ion-label>
       </ion-item>
     </ion-list>
 
@@ -73,36 +89,19 @@
         </h2>
       </ion-list-header>
       <ion-item *ngFor="let departmentMember of this.appDepartment.getDepartment().departmentMembers">
-          <ion-card>
-            <ion-card-header>
-              <ion-card-title>
-                {{departmentMember.memberName}}
-              </ion-card-title>
-              <ion-card-subtitle>
-                {{departmentMember.memberId}}
-              </ion-card-subtitle>
-            </ion-card-header>
-            <ion-card-content
-            *ngIf="this.appUser.getMainUser().username === this.appOrganization.getOrganization().orgCreator">
-              <ion-item>
-                <ion-select placeholder="{{departmentMember.memberStatus}}"
-                style="width: 100%;" (ionChange)="this.changeMemberStatus(
-                  departmentMember.memberId,$event)">
-                  <ion-select-option value="{{departmentMember.memberStatus}}" class="cnvContsOpts">
-                    {{departmentMember.memberStatus}}
-                  </ion-select-option>
-                  <ion-select-option value="Pending" class="cnvContsOpts"
-                  *ngIf="departmentMember.memberStatus!=='Pending'">
-                    Pending
-                  </ion-select-option>
-                  <ion-select-option value="Activate" class="cnvContsOpts"
-                  *ngIf="departmentMember.memberStatus!=='Activate'">
-                    Activate
-                  </ion-select-option>
-                </ion-select>
-              </ion-item>
-            </ion-card-content>
-          </ion-card>
+        <ion-label>
+          <ion-card-title>
+            {{departmentMember.name}}
+          </ion-card-title>
+          <ion-card-subtitle>
+            {{departmentMember.status}}
+          </ion-card-subtitle>
+          <ion-button fill="clear" color="primary" class="resourceLinkBtn"
+          (click)="this.createChangeUserStatusActionSheet(departmentMember.profile_link)"
+          *ngIf="this.appOrganization.getOrganization().orgCreator === this.appUser.getMainUser().username">
+            Change
+          </ion-button>
+        </ion-label>
       </ion-item>
     </ion-list>
 

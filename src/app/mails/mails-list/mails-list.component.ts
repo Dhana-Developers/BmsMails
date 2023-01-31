@@ -56,7 +56,10 @@ export class MailsListComponent implements OnInit {
       fetchMailForm.append('flagId',JSON.stringify(flagId))
       fetchMailForm.append('mailServerId',mailLServerId)
       fetchMailForm.append('mailObjectId',JSON.stringify(mailObjId))
-      fetchMailForm.append('objectMailAccount',this.mailService.mailAccount.hostLoginAddress)
+      fetchMailForm.append('accountType',this.mailService.mailAccount.accountType)
+      fetchMailForm.append('address',this.mailService.mailAccount.hostLoginAddress)
+      fetchMailForm.append('subdomain',this.department.getDepartment().departmentID)
+      fetchMailForm.append('profileLink',this.member.getMainMember().memberId)
 
       this.appHttp.postHttp(fetchMailForm,'/mails/getMailBody').then((resp: any) =>{
 

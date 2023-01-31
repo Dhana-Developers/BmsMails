@@ -19,6 +19,8 @@ export class OrganizationService {
 
   public orgDepartments: Array<Department>=[]
 
+  public orgMode: string = 'creation'
+
   constructor(
     private appHttp: HttpService
   ) { }
@@ -32,16 +34,14 @@ export class OrganizationService {
 
       createOrgForm.append('organizationDomain',orgDetails.orgDomain)
       createOrgForm.append('organizationName',orgDetails.orgName)
-      createOrgForm.append('mailServer',orgDetails.orgMailServer)
       createOrgForm.append('orgUser',orgUser.username)
 
-      this.appHttp.postHttp(createOrgForm,'/bmsBase/editOrganization').then((orgResp: any) =>{
+      this.appHttp.postHttp(createOrgForm,'/orgProfile/editOrganization').then((orgResp: any) =>{
 
-        if(orgResp.state>1){
+        if(orgResp.state=1){
 
           this.mainOrganization.state = orgResp.state;
           this.mainOrganization.orgDomain = orgResp.organizationDomain
-          this.mainOrganization.orgMailServer = orgResp.organizationMailServer
           this.mainOrganization.orgName = orgResp.organizationName
 
         }

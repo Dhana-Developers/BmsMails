@@ -38,65 +38,6 @@ export class AccountsComponent implements OnInit {
 
   }
 
-  setMemberDetails(memberId: string, orgDomain:string): void{
-
-    for (const memberShip of this.appUsers.getMainUser().memberShips) {
-
-      if (memberShip.memberId === memberId && memberShip.organizationId == orgDomain){
-
-        let deptMailAccount: string ='';
-
-        const organizationDepts: Array<Department>=[]
-
-        memberShip.organizationDepartments.forEach((orgDept: Department) =>{
-
-          if (orgDept.departmentOrganization === orgDomain){
-
-            deptMailAccount =orgDept.mailAccount
-            organizationDepts.push(orgDept)
-
-          }
-
-        })
-
-        const departmentMembers:any = memberShip.departmentMembers
-
-        this.appUsers.getMainUser().disableNav = false
-
-        const organizationDetails: Organization = {
-          orgDomain: memberShip.organizationId,
-          orgName: memberShip.organizationName,
-          orgMailServer: memberShip.organizationMail,
-          state: this.appUsers.getMainUser().authState,
-          orgCreator: memberShip.organizationCreator
-        }
-        const departmentDetails: Department={
-          departmentID: memberShip.departmentId,
-          departmentName: memberShip.departmentName,
-          departmentOrganization: memberShip.organizationId,
-          state: this.appUsers.getMainUser().authState,
-          departmentMembers: departmentMembers,
-          mailAccount: deptMailAccount
-        }
-        const memberDetails: Member = {
-          memberId: memberShip.memberId,
-          memberDepartmentId: memberShip.departmentId,
-          memberUserId: this.appUsers.getMainUser().username
-        }
-
-        this.sysOrganaization.setMainOrganization(organizationDetails)
-        this.sysDepartments.setDepartment(departmentDetails)
-        this.sysMembers.setMainMember(memberDetails)
-        this.sysOrganaization.orgDepartments = organizationDepts
-
-        this.appRouter.navigateByUrl('profile/members')
-
-      }
-
-    }
-
-  }
-
   createRequestMebershipModal(deptId: string): void{
 
     let chosenDept: Department={
@@ -145,7 +86,7 @@ export class AccountsComponent implements OnInit {
     if (evt.target.value !== ''){
 
       searchOrgForm.append('searchTerm',evt.target.value)
-      this.appHttp.postHttp(searchOrgForm,'/bmsBase/searchOrgs').then((resp: any) =>{
+      this.appHttp.postHttp(searchOrgForm,'/orgProfile/searchOrgs').then((resp: any) =>{
 
         resp.forEach((orgeptDetails: any) => {
 
@@ -174,6 +115,19 @@ export class AccountsComponent implements OnInit {
       })
 
     }
+
+  }
+
+  setMembership(membershipId: string){
+
+    this.appUsers.setMembership(membershipId)
+    this.appRouter.navigateByUrl('/profile/members')
+
+  }
+
+  navigateTo(url: string){
+
+    this.appRouter.navigateByUrl(url)
 
   }
 

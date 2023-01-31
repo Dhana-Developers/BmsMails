@@ -12,6 +12,8 @@ export class MembersService {
     memberUserId: ''
   }
 
+  public mailAccounts: Array<MailAccount>=[]
+
   constructor(
     private appHttp: HttpService
   ) { }
@@ -22,11 +24,11 @@ export class MembersService {
 
       const editMemberForm: FormData = new FormData();
 
-      editMemberForm.append('memberId',memberDetails.memberId)
-      editMemberForm.append('memberDepartmentId',memberDetails.memberDepartmentId)
-      editMemberForm.append('memberUserId',memberDetails.memberUserId)
+      editMemberForm.append('profileLink',memberDetails.memberId)
+      editMemberForm.append('subdomain',memberDetails.memberDepartmentId)
+      editMemberForm.append('userId',memberDetails.memberUserId)
 
-      this.appHttp.postHttp(editMemberForm,'/bmsBase/editMember').then((editedMember: any) =>{
+      this.appHttp.postHttp(editMemberForm,'/orgProfile/editMember').then((editedMember: any) =>{
 
         this.mainMember.memberId = memberDetails.memberId
         this.mainMember.memberDepartmentId = memberDetails.memberDepartmentId

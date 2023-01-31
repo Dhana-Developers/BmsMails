@@ -11,6 +11,7 @@ import { MailWriterComponent } from './mail-writer/mail-writer.component';
 import { IonicModule } from '@ionic/angular';
 import { MailsAccountComponent } from './mails-account/mails-account.component';
 import { MailsAttachmentModalComponent } from './mails-attachment-modal/mails-attachment-modal.component';
+import { MailsSeverComponent } from './mails-sever/mails-sever.component';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { MailsAttachmentModalComponent } from './mails-attachment-modal/mails-at
     MailReaderComponent,
     MailWriterComponent,
     MailsAccountComponent,
-    MailsAttachmentModalComponent
+    MailsAttachmentModalComponent,
+    MailsSeverComponent
   ],
   imports: [
     CommonModule,

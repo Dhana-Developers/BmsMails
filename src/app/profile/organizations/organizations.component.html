@@ -9,9 +9,10 @@
 </ion-header>
 <ion-content>
 
-  <div class="organizationDashbord">
+  <div class="organizationDashbord ion-padding">
 
-    <ion-list [inset]="true" class=" orgainzationCreationForm">
+    <ion-list [inset]="true" class=" orgainzationCreationForm"
+    *ngIf="this.orgService.orgMode !== 'creation'">
       <ion-list-header>
 
         <h2>
@@ -32,14 +33,6 @@
       <ion-item>
         <ion-label>
           <p>
-            Mail Server
-          </p>
-          {{this.orgService.getOrganization().orgMailServer}}
-        </ion-label>
-      </ion-item>
-      <ion-item>
-        <ion-label>
-          <p>
             Owner
           </p>
           {{this.orgService.getOrganization().orgCreator}}
@@ -54,7 +47,8 @@
       </ion-item>
     </ion-list>
 
-      <ion-list [inset]="true" class="ion-padding orgainzationCreationForm">
+      <ion-list [inset]="true" class="ion-padding orgainzationCreationForm"
+      *ngIf="this.orgService.orgMode !== 'creation'">
         <ion-list-header>
 
           <h2>
@@ -79,29 +73,39 @@
         </ion-item>
       </ion-list>
 
-    <ion-list [inset]="true" class="ion-padding orgainzationCreationForm"
-    class="nosite">
-      <ion-list-header>
+      <ion-list [inset]="true" class="ion-padding orgainzationCreationForm">
+        <ion-list-header>
+          <h2>
+            Resources
+          </h2>
+        </ion-list-header>
+        <ion-item>
+          <ion-label>
+            <p>
+              Mails
+            </p>
+            <ion-label>
+              <ion-button fill="clear" color="primary" class="resourceBut"
+              (click)="this.mailServer()">
+                <ion-icon slot="start" name="add"></ion-icon>
+                Add Mail Server
+              </ion-button>
+            </ion-label>
+            <ion-item button
+            *ngFor="let mailServer of this.mails.mailServers">
+              <ion-label>
+                <p>
+                  {{mailServer.address}}
+                </p>
+                {{mailServer.name}}
+              </ion-label>
+            </ion-item>
+          </ion-label>
+        </ion-item>
+      </ion-list>
 
-        <h2>
-
-          Resources
-
-        </h2>
-
-      </ion-list-header>
-      <ion-item>
-        <ion-label>
-          <p>
-            Resource
-          </p>
-          Resource Name
-        </ion-label>
-      </ion-item>
-    </ion-list>
-
-    <ion-list [inset]="true" class="ion-padding orgainzationCreationForm"
-    class="nosite">
+    <ion-list [inset]="true" class="ion-padding orgainzationCreationForm creatOrgForm"
+    *ngIf="this.orgService.orgMode === 'creation'">
       <ion-list-header>
 
         <h2>
@@ -135,17 +139,6 @@
           (ionChange)="this.checkOrgDomain($event)"></ion-input>
 
         </ion-item>
-        <ion-item counter="true">
-
-          <ion-label position="floating">Organization Mail Server</ion-label>
-          <ion-input
-          type="text"
-          placeholder="Organization Mail Server"
-          maxlength="30"
-          class="organizationMailServer"
-          (ionChange)="this.checkOrgMailServer($event)"></ion-input>
-
-        </ion-item>
         <ion-item >
 
           <ion-button class="CreateOrgBut" disabled="true"
@@ -160,9 +153,7 @@
 
     </ion-list>
 
-    <ion-list [inset]="true" class="ion-padding departmentCreationForm"
-    *ngIf="this.users.getMainUser().username ===
-    this.orgService.getOrganization().orgCreator">
+    <ion-list [inset]="true" class="ion-padding departmentCreationForm nosite">
       <ion-list-header>
         <h2>
           New Department

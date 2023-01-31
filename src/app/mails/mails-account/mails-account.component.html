@@ -1,30 +1,51 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Create Mail Account</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cancel()">Close</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
 <ion-content>
 
   <ion-card>
 
-    <ion-card-header>
-
-      <ion-card-title>
-
-        {{this.appUser.getMainUser().firstName+' '+this.appUser.getMainUser().lastName}}
-
-      </ion-card-title>
-
-      <ion-card-subtitle>
-
-        Mail Accounts
-
-      </ion-card-subtitle>
-
-    </ion-card-header>
-
     <ion-card-content>
 
-      <ion-button fill="clear" class="mailAccountButs"
-      (click)="this.navigateToMailsList(this.appMemb.getMainMember().memberId)">
+      <ion-item>
+        <ion-label position="floating">
+          Account Name
+        </ion-label>
+        <ion-input type="text" class="accountNameIpt" placeholder="John Doe"
+        value="{{this.appUser.getMainUser().firstName}} {{this.appUser.getMainUser().lastName}}"></ion-input>
+      </ion-item>
 
-        {{this.appMemb.getMainMember().memberId}}
+      <ion-item>
+        <ion-label position="floating">
+          Account Address
+        </ion-label>
+        <ion-input type="text" class="accountAddressIpt" placeholder="johndoe@testmail.com"></ion-input>
+      </ion-item>
 
+      <ion-item>
+        <ion-label position="floating">
+          Account Password
+        </ion-label>
+        <ion-input type="password" class="accountPasswordIpt"></ion-input>
+      </ion-item>
+
+      <ion-list>
+        <ion-item>
+          <ion-select placeholder="Select Server" class="accountServer">
+            <ion-select-option *ngFor="let mailServer of this.appMails.mailServers" value="{{mailServer.address}}">{{mailServer.name}}</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-list>
+
+      <ion-button fill="clear" color="success" class="creatAccountBut creatprivateAccountBut"
+      (click)="this.createMailAccount()">
+        Create
       </ion-button>
 
     </ion-card-content>
