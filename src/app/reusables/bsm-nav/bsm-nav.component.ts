@@ -83,8 +83,12 @@ export class BsmNavComponent implements OnInit {
               sender: mailHeadResp.sender,
               reply_to: mailHeadResp.sender,
               creationTime: new Date(mailHeadResp.date),
-              mailServerId:mailHeadResp.mailServerId,
-              mailHeadId:mailHeadResp.mailHeadId
+              mailServerId: mailHeadResp.mailServerId,
+              mailHeadId: mailHeadResp.mailHeadId,
+              mailFlagId: mailHeadResp.mailLabel,
+              spam: mailHeadResp.spam,
+              trashed: mailHeadResp.trashed,
+              archived: mailHeadResp.archived
             }
 
             this.mailsService.mailHeads.push(fetchedMailHead)
@@ -175,7 +179,11 @@ export class BsmNavComponent implements OnInit {
           mailAttachments: [],
           sender: mailObjectResp.sender,
           reply_to: mailObjectResp.reply_to,
-          creationTime: new Date(mailObjectResp.mailHeadTime)
+          creationTime: new Date(mailObjectResp.mailHeadTime),
+          mailFlagId:flagId,
+          spam: mailObjectResp.spam,
+          trashed: mailObjectResp.trashed,
+          archived: mailObjectResp.archived
         }
 
         this.mailsService.mailBody={

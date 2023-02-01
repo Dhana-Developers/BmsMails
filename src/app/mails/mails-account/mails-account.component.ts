@@ -73,8 +73,12 @@ export class MailsAccountComponent implements OnInit {
           sender: mailHeadResp.sender,
           reply_to: mailHeadResp.sender,
           creationTime: new Date(mailHeadResp.date),
-          mailServerId:mailHeadResp.mailServerId,
-          mailHeadId:mailHeadResp.mailHeadId
+          mailServerId: mailHeadResp.mailServerId,
+          mailHeadId: mailHeadResp.mailHeadId,
+          mailFlagId: mailHeadResp.mailLabel,
+          spam: mailHeadResp.spam,
+          trashed: mailHeadResp.trashed,
+          archived: mailHeadResp.archived
         }
 
         this.appMails.mailHeads.push(fetchedMailHead)

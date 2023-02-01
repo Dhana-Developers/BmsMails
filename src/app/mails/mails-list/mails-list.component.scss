@@ -1,0 +1,16 @@
+.nosite{
+    display:none;
+}
+
+@media all and (min-width: 600px) {
+
+    .mailsSearchBar{
+
+        max-width: 600px;
+        position: relative;
+        left: 50%;
+        transform: translate(-50%);
+
+    }
+
+}

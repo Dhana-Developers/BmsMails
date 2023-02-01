@@ -35,6 +35,12 @@ export class MailsListComponent implements OnInit {
 
   ) { }
 
+  public months: Array<string>=[
+
+    'Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'
+
+  ]
+
   ngOnInit() {
 
     if (this.appUser.getMainUser().username===''){
@@ -42,6 +48,38 @@ export class MailsListComponent implements OnInit {
       this.appRouter.navigateByUrl('auth/signIn')
 
     }
+
+  }
+
+  getMonth(monthNumber?: number): string{
+
+    let month: string = ''
+
+    if (monthNumber !== undefined){
+
+      month=this.months[monthNumber]
+
+    }
+
+    return month
+
+  }
+
+  subtractDate(mailDate?: any): number{
+
+    let hoursPast: number = 0
+
+    if (mailDate !== undefined){
+
+      const currentDate: any = new Date();
+
+      const userAge: any = Math.abs(currentDate-mailDate);
+
+      hoursPast = Math.ceil(userAge/(1000*3600));
+
+    }
+
+    return hoursPast
 
   }
 
@@ -171,6 +209,66 @@ export class MailsListComponent implements OnInit {
 
   }
 
+  restoreFlag(mailObjId: number, flagName: string, evt:any):void{
+
+    this.showLoader('Change Mail To '+flagName).then((loader: HTMLIonLoadingElement) =>{
+
+      const mailsListContent: any = this.eleRef.nativeElement.querySelector('.mailsListContent')
+      const headPane: any =this.eleRef.nativeElement.querySelector('#hP'+mailObjId)
+
+      const archiveMailForm: FormData = new FormData()
+
+      this.mailService.mailFlags.forEach((mailFlag: MailFlag) =>{
+
+        if (mailFlag.flagName === flagName){
+
+          archiveMailForm.append('mailFlagId',JSON.stringify(mailFlag.flagId))
+
+        }
+
+      })
+
+      archiveMailForm.append('MailObjId',JSON.stringify(mailObjId))
+
+      this.appHttp.postHttp(archiveMailForm,'/mails/restoreFlag').then((resp: any) =>{
+
+        if (this.mailService.chosenFlag.flagName === 'Draft'){
+
+          this.appStorage.get('drafts').then((systemDrafts:Array<Draft>) =>{
+            let newSystemDrafts:Array<Draft>=[]
+            let draftId:number = 0;
+            systemDrafts.forEach((systemDraft: Draft) =>{
+
+              if (systemDraft.mailHead.mailObjectId === mailObjId){
+
+                systemDrafts.splice(draftId,1)
+                newSystemDrafts = systemDrafts
+
+              }
+
+              draftId+=1
+            })
+
+            this.appStorage.set('drafts',newSystemDrafts)
+            this.mailService.systemDrafts = newSystemDrafts
+            mailsListContent.removeChild(headPane)
+            loader.dismiss()
+
+          })
+
+        }else{
+          mailsListContent.removeChild(headPane)
+          loader.dismiss()
+        }
+
+      })
+
+
+    })
+
+  }
+
+
   editMail(mailObjId: number):void{
 
     this.showLoader('Getting Your Draft').then((loader: HTMLIonLoadingElement) =>{
@@ -213,7 +311,11 @@ export class MailsListComponent implements OnInit {
             mailReceipients: systemDraft.mailHead.mailReceipients,
             mailAttachments,
             sender: systemDraft.mailHead.sender,
-            reply_to: systemDraft.mailHead.reply_to
+            reply_to: systemDraft.mailHead.reply_to,
+            mailFlagId: systemDraft.mailHead.mailFlagId,
+            spam: systemDraft.mailHead.spam,
+            trashed: systemDraft.mailHead.trashed,
+            archived: systemDraft.mailHead.archived
           }
 
           this.mailService.mailBody.mailBodyPayload=systemDraft.mailBody.mailBodyParay.join('\n')
@@ -271,6 +373,64 @@ export class MailsListComponent implements OnInit {
 
     })
 
+  }
+
+  setFlagNameTo(title: string){
+
+    this.eleRef.nativeElement.querySelector('.titleTag').innerText = title;
+
+  }
+
+  getSearchedMails(evt: any){
+
+    if (evt.target.value !==''){
+
+      this.searchMails(evt.target.value);
+
+    }
+
+  }
+
+
+  searchMails(searchTerm: string){
+    const fetchMailHeadsForm: FormData = new FormData()
+    fetchMailHeadsForm.append('accountType',this.mailService.mailAccount.accountType)
+    fetchMailHeadsForm.append('profileLink',this.member.getMainMember().memberId)
+    fetchMailHeadsForm.append('subdomain',this.department.getDepartment().departmentID)
+    fetchMailHeadsForm.append('address',this.mailService.mailAccount.hostLoginAddress)
+    fetchMailHeadsForm.append('searchTerm',searchTerm)
+
+    this.appHttp.postHttp(fetchMailHeadsForm,'/mails/searchMails').then((resp: Array<any>) =>{
+
+      this.mailService.mailHeads=[]
+
+      resp.forEach((mailHeadResp: any) =>{
+
+        const fetchedMailHead:MailHead={
+          mailObjectId: mailHeadResp.mailObjectId,
+          mailSubject: mailHeadResp.mailSubject,
+          mailCc: [],
+          mailBcc: [],
+          mailReceipients: [],
+          mailAttachments: [],
+          sender: mailHeadResp.sender,
+          reply_to: mailHeadResp.sender,
+          creationTime: new Date(mailHeadResp.date),
+          mailServerId: mailHeadResp.mailServerId,
+          mailHeadId: mailHeadResp.mailHeadId,
+          mailFlagId: mailHeadResp.mailLabel,
+          spam: mailHeadResp.spam,
+          trashed: mailHeadResp.trashed,
+          archived: mailHeadResp.archived
+        }
+        this.mailService.mailHeads.push(fetchedMailHead)
+
+      })
+
+    }).catch((err: any) =>{
+      console.error(err);
+
+    })
   }
 
 }

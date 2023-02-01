@@ -43,7 +43,11 @@ export class MailsService {
     mailReceipients: [],
     mailAttachments: [],
     sender: '',
-    reply_to: ''
+    reply_to: '',
+    mailFlagId: 0,
+    spam: false,
+    trashed: false,
+    archived: false
   }
   public mailBody:MailBody={
     mailBodyId: 0,
@@ -55,6 +59,7 @@ export class MailsService {
   public mailHeads: Array<MailHead> = []
   public unreadMails: Array<MailHead>=[]
   public mailSection: string = 'Reader'
+
   public chosenFlag:MailFlag={
     flagId: 0,
     flagName: '',
@@ -108,6 +113,30 @@ export class MailsService {
     this.mailServer.name = mailServerDetails.name
 
     return this.mailServer
+
+  }
+
+  getMailFlag(flagId: number):MailFlag{
+
+    let sysmailFlag: MailFlag={
+      flagId: 0,
+      flagName: '',
+      flagMd: '',
+      flagImapName: '',
+      flaColor: ''
+    }
+
+    this.mailFlags.forEach((mailFlag: MailFlag) =>{
+
+      if (mailFlag.flagId === flagId){
+
+        sysmailFlag = mailFlag
+
+      }
+
+    })
+
+    return sysmailFlag
 
   }
 

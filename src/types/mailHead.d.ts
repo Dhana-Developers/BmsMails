@@ -11,10 +11,14 @@ declare global{
         mailReceipients:Array<string>,
         mailAttachments: Array<MailAttachment>,
         sender:string,
+        mailFlagId:number
         reply_to:string,
+        spam:boolean,
+        trashed: boolean,
+        archived: boolean,
         creationTime?: Date,
         mailServerId?:string,
-        mailHeadId?:number
+        mailHeadId?:number,
 
     }
 
