@@ -44,24 +44,28 @@
         <ion-item-option color="success"
         *ngIf="mailHead.spam "
         (click)="this.restoreFlag(mailHead.mailObjectId,'Spam',$event)">
-          <ion-icon slot="icon-only" name="refresh-circle-outline"></ion-icon>
+          <ion-icon slot="top" name="refresh-circle-outline"></ion-icon>
+          Restore
         </ion-item-option>
         <ion-item-option color="success"
         *ngIf="mailHead.archived"
         (click)="this.restoreFlag(mailHead.mailObjectId,'Archive',$event)">
-          <ion-icon slot="icon-only" name="refresh-circle-outline"></ion-icon>
+          <ion-icon slot="top" name="refresh-circle-outline"></ion-icon>
+          Restore
         </ion-item-option>
 
         <ion-item-option color="success"
         *ngIf="mailHead.trashed"
         (click)="this.restoreFlag(mailHead.mailObjectId,'Trash',$event)">
-          <ion-icon slot="icon-only" name="refresh-circle-outline"></ion-icon>
+          <ion-icon slot="top" name="refresh-circle-outline"></ion-icon>
+          Restore
         </ion-item-option>
         <ion-item-option color="danger"
         *ngIf="!mailHead.archived"
         (click)="this.changeMailFlag(mailHead.mailObjectId,'Archive',$event)"
         expandable>
-        <ion-icon slot="icon-only" name="archive-outline"></ion-icon>
+        <ion-icon slot="top" name="archive-outline"></ion-icon>
+        Archive
         </ion-item-option>
       </ion-item-options>
 
@@ -97,18 +101,21 @@
       <ion-item-option color="spam-mails"
       *ngIf="!mailHead.spam"
       (click)="this.changeMailFlag(mailHead.mailObjectId,'Spam',$event)">
-        <ion-icon slot="icon-only" name="trash-bin-outline"></ion-icon>
+        <ion-icon slot="top" name="trash-bin-outline"></ion-icon>
+        Spam
       </ion-item-option>
       <ion-item-option color="primary"
       *ngIf="this.mailService.getMailFlag(mailHead.mailFlagId).flagName === 'Draft'"
       (click)="this.editMail(mailHead.mailObjectId)">
-        <ion-icon slot="icon-only" name="document-text-outline"></ion-icon>
+        <ion-icon slot="top" name="document-text-outline"></ion-icon>
+        Edit
       </ion-item-option>
         <ion-item-option color="danger" fill="clear"
         *ngIf="!mailHead.trashed"
         (click)="this.changeMailFlag(mailHead.mailObjectId,'Trash',$event)"
         expandable>
-          <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+          <ion-icon slot="top" name="trash-outline"></ion-icon>
+          Trash
         </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>

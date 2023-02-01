@@ -6,7 +6,7 @@ declare global{
         mailBodyId:number,
         mailBodyParay: Array<string>
         mailObjectId:number,
-        mailBodyPayload?:string,
+        mailBodyPayload?:any,
         mailBodyType?:string
 
     }

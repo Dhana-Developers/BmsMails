@@ -93,7 +93,7 @@ export class ResetPasswordComponent implements OnInit {
             const emailParas: Array<string> = [
               'You are trying to reset your password.',
               'This is the code to use for password reset.',
-              `${this.generatedCode}`,
+              this.generatedCode,
               'Fill it in te generated code input box.',
               'If this is not you just ignore the email'
             ]
@@ -194,6 +194,7 @@ export class ResetPasswordComponent implements OnInit {
     sendMailForm.append('bcc',JSON.stringify([]))
     sendMailForm.append('objId',JSON.stringify(this.mailService.mailObject.mailObjectId))
     sendMailForm.append('mailFlagId',JSON.stringify(flagId))
+    sendMailForm.append('mailFooterPresent',JSON.stringify(false))
 
       this.showLoader('Sending your mail').then((loaderCtrl: any) =>{
 

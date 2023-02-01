@@ -12,6 +12,28 @@ export class MailsService {
   }
 
   public mailServers: Array<MailServer>=[]
+  public mailFooterPresent: boolean = false;
+  public mailFooterId=0;
+  public mailFooters: Array<any> = []
+
+  public footerRecord: any = {
+    'id':0,
+    'value':''
+  }
+
+  public chosenFooter: any = {
+
+    'id':0,
+    'salutation':'',
+    'name':'',
+    'img':false,
+    'footerRecords':[],
+    'footerMedia':{},
+
+  }
+
+  public vwMailFooterDetails = 'nosite'
+  public footerMediaClass = 'nosite'
 
   public mailAccount: MailAccount = {
     hostLoginAddress: '',

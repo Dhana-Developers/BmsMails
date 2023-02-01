@@ -8,6 +8,7 @@ import { LoadingController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 
 import { MailsAttachmentModalComponent } from '../mails-attachment-modal/mails-attachment-modal.component';
+import { FootersComponent } from '../footers/footers.component';
 
 import { OrganizationService } from 'src/app/base-services/organization/organization.service';
 import { DepartmentsService } from 'src/app/base-services/departments/departments.service';
@@ -40,7 +41,7 @@ export class MailWriterComponent implements OnInit,AfterViewInit {
     private appUser: UserService,
     private appRouter: Router,
     private appStorage: Storage,
-    private appHttp: HttpService,
+    public appHttp: HttpService,
     private loadingController:LoadingController,
     private alertCtrl: AlertController
   ) { }
@@ -588,6 +589,13 @@ export class MailWriterComponent implements OnInit,AfterViewInit {
     sendMailForm.append('objId',JSON.stringify(this.mailService.mailObject.mailObjectId))
     sendMailForm.append('mailFlagId',JSON.stringify(flagId))
 
+    sendMailForm.append('mailFooterPresent',JSON.stringify(this.mailService.mailFooterPresent))
+    sendMailForm.append('footerRecords',JSON.stringify(this.mailService.chosenFooter.footerRecords))
+    sendMailForm.append('footerMediaPresent',JSON.stringify(this.mailService.chosenFooter.img))
+    sendMailForm.append('footerMedia',JSON.stringify(this.mailService.chosenFooter.footerMedia))
+    sendMailForm.append('salutation',this.mailService.chosenFooter.salutation)
+    sendMailForm.append('baseUrl',this.appHttp.getBaseLink())
+
     const receivers = this.mailService.mailHead.mailReceipients.concat(
       this.mailService.mailHead.mailCc,this.mailService.mailHead.mailBcc
     )
@@ -676,6 +684,40 @@ export class MailWriterComponent implements OnInit,AfterViewInit {
         altctrl.present()
 
         resolve(altctrl)
+
+      })
+
+    })
+
+  }
+
+  createFootersModal(): void{
+
+    const getFootersForm: FormData = new FormData()
+
+    getFootersForm.append('address',this.mailService.mailAccount.hostLoginAddress)
+
+    this.showLoader('Getting Available footers').then((loadingEle: HTMLIonLoadingElement) =>{
+
+      this.appHttp.postHttp(getFootersForm,'/mails/getFooters').then((mailFooters: any) =>{
+
+        loadingEle.dismiss()
+
+        this.mailService.mailFooters = mailFooters
+
+        this.mdlCtr.create({
+          component: FootersComponent
+        }).then((footersMdl: HTMLIonModalElement) => {
+
+          footersMdl.present();
+
+        });
+
+      }).catch((err: any) =>{
+
+        loadingEle.dismiss()
+        console.log(err);
+        this.showAlert('Error occured please try again.')
 
       })
 

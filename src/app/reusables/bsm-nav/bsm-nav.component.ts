@@ -148,7 +148,7 @@ export class BsmNavComponent implements OnInit {
       let flagId = 0;
       this.mailsService.mailFlags.forEach((mailFlag: MailFlag) =>{
 
-        if (mailFlag.flagName === 'Sent'){
+        if (mailFlag.flagName === 'Draft'){
 
           flagId = mailFlag.flagId
 

@@ -12,6 +12,7 @@ import { IonicModule } from '@ionic/angular';
 import { MailsAccountComponent } from './mails-account/mails-account.component';
 import { MailsAttachmentModalComponent } from './mails-attachment-modal/mails-attachment-modal.component';
 import { MailsSeverComponent } from './mails-sever/mails-sever.component';
+import { FootersComponent } from './footers/footers.component';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import { MailsSeverComponent } from './mails-sever/mails-sever.component';
     MailWriterComponent,
     MailsAccountComponent,
     MailsAttachmentModalComponent,
-    MailsSeverComponent
+    MailsSeverComponent,
+    FootersComponent
   ],
   imports: [
     CommonModule,

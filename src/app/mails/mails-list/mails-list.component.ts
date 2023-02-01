@@ -433,4 +433,66 @@ export class MailsListComponent implements OnInit {
     })
   }
 
+  processHtml(payload: any): any{
+
+    let parser = new DOMParser();
+    const innerDoc = parser.parseFromString(payload, 'text/html');
+
+    const initArray: Array<Element> = []
+
+    for (let index = 0; index < innerDoc.body.children.length; index++) {
+      const element = innerDoc.body.children[index];
+      initArray.push(element)
+
+    }
+
+    const initChildrenList: Array<Element>=this.getChildren(initArray,0)
+
+    const widthLimitedElements: Array<Element> = this.limitWidth(initChildrenList)
+
+    return widthLimitedElements
+
+  }
+
+  getChildren(initChildrenList: Array<Element>, last_mail:number):Array<Element>{
+
+    for (let index = last_mail; index < initChildrenList.length; index++) {
+      const initChild = initChildrenList[index];
+
+      if (initChild.children!== undefined){
+
+        for (let index = 0; index < initChild.children.length; index++) {
+          const element = initChild.children[index];
+          initChildrenList.push(element)
+        }
+
+      }
+
+    }
+
+    return initChildrenList
+
+  }
+
+  limitWidth(innerElements:Array<Element>): Array<Element>{
+
+    const widthLimitedElements: Array<Element> = []
+
+    innerElements.forEach((innerElement: any) =>{
+
+      if (innerElement.width!==undefined && innerElement.width!==''){
+
+        if (Number(innerElement.width)>window.innerWidth){
+          innerElement.width = 100+'%';
+          innerElement.style.maxWidth=100+'%';
+        }
+        widthLimitedElements.push(innerElement)
+      }
+
+    })
+
+    return widthLimitedElements
+
+  }
+
 }

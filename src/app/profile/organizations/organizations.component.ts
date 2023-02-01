@@ -162,9 +162,8 @@ export class OrganizationsComponent implements OnInit {
         state: 0,
         mailAccount: ''
       }
-
+      this.orgDept.mailAccounts=[]
       resp.departmentMails.forEach((departmentMail: any) => {
-
         const appMailAccount: MailAccount={
           hostLoginAddress: departmentMail.address,
           name: departmentMail.name,

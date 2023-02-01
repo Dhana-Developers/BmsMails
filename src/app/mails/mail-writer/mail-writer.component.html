@@ -54,6 +54,10 @@
         <ion-toolbar>
           <ion-buttons slot="end">
             <ion-button color="primary"
+            (click)="this.createFootersModal()">
+              <ion-icon name="add" slot="icon-only"></ion-icon>
+            </ion-button>
+            <ion-button color="primary"
             (click)="this.openCcOrBcc('Cc')">
               Cc
             </ion-button>
@@ -110,6 +114,34 @@
     </ion-textarea>
 
     </ion-card-content>
+
+    <div class="vwMailFooterDetails {{this.mailService.vwMailFooterDetails}}"
+    style="padding: 10px; box-sizing:border-box;">
+      <p style="font-size: small;">
+          {{this.mailService.chosenFooter.salutation}}
+      </p>
+      <table>
+          <tr>
+              <td style="padding: 10px;box-sizing: boader-box;" class="footerMedia {{this.mailService.footerMediaClass}}">
+                <div class="vWMFDImgHolder">
+                    <img src="{{this.appHttp.getBaseLink()}}{{this.mailService.chosenFooter.footerMedia.value}}" class="vWMFDImgTag"
+                    style="width: 110px;">
+                </div>
+              </td>
+
+              <td style="padding: 10px;box-sizing: boader-box;">
+                  <div class="vWMFDCompanyDetails">
+                      <p style="font-size: small;" *ngFor="let footerRecord of this.mailService.chosenFooter.footerRecords">
+                          {{footerRecord.value}}
+                      </p>
+                  </div>
+              </td>
+
+          </tr>
+      </table>
+
+    </div>
+
 
   </ion-card>
 
