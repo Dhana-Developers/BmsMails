@@ -161,11 +161,21 @@ export class MailsListComponent implements OnInit {
 
       const archiveMailForm: FormData = new FormData()
 
+      let flagToChange: MailFlag = {
+        flagId: 0,
+        flagName: '',
+        flagMd: '',
+        flagImapName: '',
+        flaColor: ''
+      }
+
       this.mailService.mailFlags.forEach((mailFlag: MailFlag) =>{
 
         if (mailFlag.flagName === flagName){
 
           archiveMailForm.append('mailFlagId',JSON.stringify(mailFlag.flagId))
+
+          flagToChange = mailFlag;
 
         }
 
@@ -178,22 +188,28 @@ export class MailsListComponent implements OnInit {
         if (this.mailService.chosenFlag.flagName === 'Draft'){
 
           this.appStorage.get('drafts').then((systemDrafts:Array<Draft>) =>{
-            let newSystemDrafts:Array<Draft>=[]
-            let draftId:number = 0;
             systemDrafts.forEach((systemDraft: Draft) =>{
 
               if (systemDraft.mailHead.mailObjectId === mailObjId){
 
-                systemDrafts.splice(draftId,1)
-                newSystemDrafts = systemDrafts
+                if (flagToChange.flagName === 'Trash'){
+
+                  systemDraft.mailHead.trashed = true
+
+                }else if (flagToChange.flagName === 'Spam'){
+
+                  systemDraft.mailHead.spam = true
+
+                }else if (flagToChange.flagName === 'Archive'){
+
+                  systemDraft.mailHead.archived = true
+
+                }
 
               }
-
-              draftId+=1
             })
 
-            this.appStorage.set('drafts',newSystemDrafts)
-            this.mailService.systemDrafts = newSystemDrafts
+            this.appStorage.set('drafts',systemDrafts)
             mailsListContent.removeChild(headPane)
             loader.dismiss()
 
@@ -220,11 +236,21 @@ export class MailsListComponent implements OnInit {
 
       const archiveMailForm: FormData = new FormData()
 
+      let flagToChange: MailFlag = {
+        flagId: 0,
+        flagName: '',
+        flagMd: '',
+        flagImapName: '',
+        flaColor: ''
+      }
+
       this.mailService.mailFlags.forEach((mailFlag: MailFlag) =>{
 
         if (mailFlag.flagName === flagName){
 
           archiveMailForm.append('mailFlagId',JSON.stringify(mailFlag.flagId))
+
+          flagToChange = mailFlag;
 
         }
 
@@ -234,34 +260,33 @@ export class MailsListComponent implements OnInit {
 
       this.appHttp.postHttp(archiveMailForm,'/mails/restoreFlag').then((resp: any) =>{
 
-        if (this.mailService.chosenFlag.flagName === 'Draft'){
+        this.appStorage.get('drafts').then((systemDrafts:Array<Draft>) =>{
+          systemDrafts.forEach((systemDraft: Draft) =>{
 
-          this.appStorage.get('drafts').then((systemDrafts:Array<Draft>) =>{
-            let newSystemDrafts:Array<Draft>=[]
-            let draftId:number = 0;
-            systemDrafts.forEach((systemDraft: Draft) =>{
+            if (systemDraft.mailHead.mailObjectId === mailObjId){
 
-              if (systemDraft.mailHead.mailObjectId === mailObjId){
+              if (flagToChange.flagName === 'Trash'){
 
-                systemDrafts.splice(draftId,1)
-                newSystemDrafts = systemDrafts
+                systemDraft.mailHead.trashed = false
+
+              }else if (flagToChange.flagName === 'Spam'){
+
+                systemDraft.mailHead.spam = false
+
+              }else if (flagToChange.flagName === 'Archive'){
+
+                systemDraft.mailHead.archived = false
 
               }
 
-              draftId+=1
-            })
-
-            this.appStorage.set('drafts',newSystemDrafts)
-            this.mailService.systemDrafts = newSystemDrafts
-            mailsListContent.removeChild(headPane)
-            loader.dismiss()
-
+            }
           })
 
-        }else{
+          this.appStorage.set('drafts',systemDrafts)
           mailsListContent.removeChild(headPane)
           loader.dismiss()
-        }
+
+        })
 
       })
 
@@ -275,7 +300,7 @@ export class MailsListComponent implements OnInit {
 
     this.showLoader('Getting Your Draft').then((loader: HTMLIonLoadingElement) =>{
 
-    this.appStorage.get('drafts').then((systemDrafts:Array<Draft>) =>{
+    this.appStorage.get('drafts').then((systemDrafts:Array<any>) =>{
 
       systemDrafts.forEach((systemDraft: Draft) =>{
 
@@ -284,7 +309,7 @@ export class MailsListComponent implements OnInit {
           const mailAttachments: Array<MailAttachment>=[]
 
 
-          systemDraft.mailHead.mailAttachments.forEach((mailAtt: any) =>{
+          systemDraft.mailHead.mailAttachments.forEach((mailAtt: IdbMailAttachment) =>{
 
             let mailLinkUrl: any=null
 
@@ -305,7 +330,7 @@ export class MailsListComponent implements OnInit {
 
           })
 
-          const idbMailHead: MailHead={
+          const mailHead: MailHead={
             mailObjectId: systemDraft.mailHead.mailObjectId,
             mailSubject: systemDraft.mailHead.mailSubject,
             mailCc: systemDraft.mailHead.mailCc,
@@ -317,12 +342,13 @@ export class MailsListComponent implements OnInit {
             mailFlagId: systemDraft.mailHead.mailFlagId,
             spam: systemDraft.mailHead.spam,
             trashed: systemDraft.mailHead.trashed,
-            archived: systemDraft.mailHead.archived
+            archived: systemDraft.mailHead.archived,
+            creationTime: new Date(systemDraft.mailHead.creationTime)
           }
 
           this.mailService.mailBody.mailBodyPayload=systemDraft.mailBody.mailBodyParay.join('\n')
 
-          this.mailService.mailHead=idbMailHead
+          this.mailService.mailHead=mailHead
           this.mailService.mailBody=systemDraft.mailBody
           this.mailService.mailObject=systemDraft.mailObject
 
@@ -350,8 +376,34 @@ export class MailsListComponent implements OnInit {
 
       this.appHttp.postHttp(clearMailFlagForm,'/mails/clearMailFlag').then((resp: any) =>{
 
-        this.mailService.mailHeads=[]
-        loader.dismiss()
+        this.appStorage.get('drafts').then((systemDrafts:Array<Draft>) =>{
+          systemDrafts.forEach((systemDraft: Draft) =>{
+
+            if (systemDraft.mailHead.sender === this.mailService.mailAccount.hostLoginAddress){
+
+              if (this.mailService.chosenFlag.flagName === 'Trash'&&
+              systemDraft.mailHead.trashed){
+
+                systemDrafts.splice(systemDrafts.indexOf(systemDraft),1)
+
+              }else if (this.mailService.chosenFlag.flagName === 'Spam'&&
+              systemDraft.mailHead.spam){
+
+                systemDrafts.splice(systemDrafts.indexOf(systemDraft),1)
+
+              }else if (this.mailService.chosenFlag.flagName === 'Archive'&&
+              systemDraft.mailHead.archived){
+
+                systemDrafts.splice(systemDrafts.indexOf(systemDraft),1)
+
+              }
+
+            }
+          })
+          this.appStorage.set('drafts',systemDrafts)
+          this.mailService.mailHeads=[]
+          loader.dismiss()
+        })
 
       })
 

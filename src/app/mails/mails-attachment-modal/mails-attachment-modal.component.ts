@@ -70,49 +70,7 @@ export class MailsAttachmentModalComponent implements OnInit {
       mailAtt.attLink = new URL(`${this.appHttp.getBaseLink()}${resp.attLink}`)
 
       this.appMails.mailHead.mailAttachments.push(mailAtt)
-      this.appStorage.get('drafts').then((systemDrafts:Array<Draft>) =>{
-
-        systemDrafts.forEach((systemDraft: Draft) =>{
-
-          const mailAttachments: Array<string>=[]
-
-          if (systemDraft.mailHead.mailObjectId === this.appMails.mailHead.mailObjectId){
-
-            this.appMails.mailHead.mailAttachments.forEach((mailAtt: MailAttachment) =>{
-
-              const idbMailAtt: any={
-                attId: mailAtt.attId,
-                attName: mailAtt.attName,
-                attType: mailAtt.attType,
-                attExt: mailAtt.attExt,
-                objectId: mailAtt.objectId,
-                attLink: mailAtt.attLink?.href
-              }
-
-              mailAttachments.push(idbMailAtt)
-
-            })
-
-            const idbMailHead: any={
-              mailObjectId: this.appMails.mailHead.mailObjectId,
-              mailSubject: this.appMails.mailHead.mailSubject,
-              mailCc: this.appMails.mailHead.mailCc,
-              mailBcc: this.appMails.mailHead.mailBcc,
-              mailReceipients: this.appMails.mailHead.mailReceipients,
-              mailAttachments,
-              sender: this.appMails.mailHead.sender,
-              reply_to: this.appMails.mailHead.reply_to
-            }
-
-            systemDraft.mailHead = idbMailHead
-
-          }
-
-        })
-
-        this.appStorage.set('drafts',systemDrafts)
-
-      })
+      this.appMails.setDraft()
 
     })
 
@@ -127,48 +85,7 @@ export class MailsAttachmentModalComponent implements OnInit {
       if (mailAtt.attId === attId){
 
         this.appMails.mailHead.mailAttachments.splice(attIndex,1);
-        this.appStorage.get('drafts').then((systemDrafts:Array<Draft>) =>{
-
-          systemDrafts.forEach((systemDraft: Draft) =>{
-
-            if (systemDraft.mailHead.mailObjectId === this.appMails.mailHead.mailObjectId){
-
-              const mailAttachments: Array<string>=[]
-              this.appMails.mailHead.mailAttachments.forEach((mailAtt: MailAttachment) =>{
-
-                const idbMailAtt: any={
-                  attId: mailAtt.attId,
-                  attName: mailAtt.attName,
-                  attType: mailAtt.attType,
-                  attExt: mailAtt.attExt,
-                  objectId: mailAtt.objectId,
-                  attLink: mailAtt.attLink?.href
-                }
-
-                mailAttachments.push(idbMailAtt)
-
-              })
-
-              const idbMailHead: any={
-                mailObjectId: this.appMails.mailHead.mailObjectId,
-                mailSubject: this.appMails.mailHead.mailSubject,
-                mailCc: this.appMails.mailHead.mailCc,
-                mailBcc: this.appMails.mailHead.mailBcc,
-                mailReceipients: this.appMails.mailHead.mailReceipients,
-                mailAttachments,
-                sender: this.appMails.mailHead.sender,
-                reply_to: this.appMails.mailHead.reply_to
-              }
-
-              systemDraft.mailHead = idbMailHead
-
-            }
-
-          })
-
-          this.appStorage.set('drafts',systemDrafts)
-
-        })
+        this.appMails.setDraft()
 
       }
 

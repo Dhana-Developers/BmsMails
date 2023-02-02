@@ -200,22 +200,6 @@ export class MembersComponent implements OnInit {
 
         if (systeMailFlags.status !== 0){
 
-          this.appStorage.get('drafts').then((systemDrafts: Array<Draft>) =>{
-
-            this.appMails.systemDrafts = []
-
-            systemDrafts.forEach((systemDraft: Draft) =>{
-
-              if (systemDraft.mailHead.sender === this.appMails.mailAccount.hostLoginAddress){
-
-                this.appMails.systemDrafts.push(systemDraft);
-
-              }
-
-            })
-
-          })
-
           this.appMails.mailAccount.hostLoginAddress = address
           this.appMails.mailAccount.accountType = accountType
 

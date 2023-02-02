@@ -111,22 +111,31 @@ export class BsmNavComponent implements OnInit {
       }else{
         this.appStorage.get('drafts').then((systemDrafts:Array<Draft>) =>{
 
-          this.mailsService.systemDrafts = []
+          if (systemDrafts!== null){
 
-          systemDrafts.forEach((systemDraft: Draft) =>{
+            systemDrafts.forEach((systemDraft: Draft) =>{
 
-            if (systemDraft.mailHead.sender === this.mailsService.mailAccount.hostLoginAddress){
+              if (systemDraft.mailHead.sender === this.mailsService.mailAccount.hostLoginAddress&&
+                !systemDraft.mailHead.trashed&&!systemDraft.mailHead.spam&&!systemDraft.mailHead.archived){
 
-              this.mailsService.systemDrafts.push(systemDraft);
-              this.mailsService.mailHeads.push(systemDraft.mailHead)
+                const mailHead: MailHead = this.mailsService.convertToMailhead(systemDraft.mailHead)
 
-            }
+                this.mailsService.mailHeads.push(mailHead)
 
-          })
 
-          loader.dismiss()
+              }
 
-          this.appRouter.navigateByUrl('mails/mailsList')
+            })
+
+            loader.dismiss()
+
+            this.appRouter.navigateByUrl('mails/mailsList')
+
+          }else{
+
+            loader.dismiss()
+
+          }
 
         })
 
@@ -191,43 +200,8 @@ export class BsmNavComponent implements OnInit {
           mailBodyParay: [],
           mailObjectId: mailObjectResp.mail_object_id
         }
-        this.appStorage.get('drafts').then((systemDrafts: Array<Draft>) =>{
-          this.mailsService.systemDrafts=[]
 
-          const currentDraft: Draft = {
-            mailObject: this.mailsService.mailObject,
-            mailHead: this.mailsService.mailHead,
-            mailBody: this.mailsService.mailBody
-          }
-
-          if (systemDrafts !== null){
-
-            systemDrafts.push(currentDraft)
-            this.appStorage.set('drafts', systemDrafts)
-
-            systemDrafts.forEach((systemDraft: any) =>{
-
-              if (systemDraft.mailHead.sender === this.mailsService.mailAccount.hostLoginAddress){
-
-                this.mailsService.systemDrafts.push(systemDraft);
-
-              }
-
-            })
-
-          }else{
-
-            this.appStorage.set('drafts', [currentDraft])
-
-            this.mailsService.systemDrafts = [currentDraft]
-
-          }
-
-        }).catch((err: any) =>{
-
-          console.error(err);
-
-        })
+        this.mailsService.setDraft(true)
 
         this.mailsService.mailSection='Writer'
 

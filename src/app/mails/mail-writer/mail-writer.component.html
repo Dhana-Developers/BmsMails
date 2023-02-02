@@ -79,7 +79,8 @@
 
       <ion-card-subtitle class="nosite ccOrBccInput">
         <ion-item>
-          <ion-input type="email" placeholder="{{this.ccOrBccFlag}}" class="ccOrBccInputTxt"></ion-input>
+          <ion-input type="email" placeholder="{{this.ccOrBccFlag}}" class="ccOrBccInputTxt"
+          (ionChange)="this.searcheContact($event)"></ion-input>
           <ion-button fill="clear" color="primary"
           (click)="this.addCcOrBcc()">
             <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
@@ -89,11 +90,18 @@
 
       <ion-card-subtitle>
         <ion-item>
-          <ion-input type="email" placeholder="Receipient" class="receipientContact"></ion-input>
+          <ion-input type="email" placeholder="johndoe@example.com" class="receipientContact"
+          (ionChange)="this.searcheContact($event)"></ion-input>
           <ion-button fill="clear" color="primary"
           (click)="this.addRecipient()">
-            <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+            <ion-icon slot="end" name="add-circle-outline"></ion-icon>
           </ion-button>
+        </ion-item>
+        <ion-item button *ngFor="let searchedContact of this.mailService.searchedContacts"
+        (click)="this.selectContact(searchedContact)">
+          <ion-label>
+            {{searchedContact}}
+          </ion-label>
         </ion-item>
       </ion-card-subtitle>
 

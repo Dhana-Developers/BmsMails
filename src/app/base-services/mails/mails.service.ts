@@ -1,5 +1,9 @@
 import { Injectable } from '@angular/core';
 
+import { Storage } from '@ionic/storage';
+
+import { HttpService } from '../comms/http/http.service';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -15,6 +19,7 @@ export class MailsService {
   public mailFooterPresent: boolean = false;
   public mailFooterId=0;
   public mailFooters: Array<any> = []
+  public searchedContacts: Array<string> = []
 
   public footerRecord: any = {
     'id':0,
@@ -77,7 +82,6 @@ export class MailsService {
     mailObjectId: 0
   }
   public mailFlags: Array<MailFlag>=[]
-  public systemDrafts: Array<Draft>=[]
   public mailHeads: Array<MailHead> = []
   public unreadMails: Array<MailHead>=[]
   public mailSection: string = 'Reader'
@@ -91,7 +95,10 @@ export class MailsService {
   }
   public mailAccountType: string = 'member';//member, department, organization
 
-  constructor() { }
+  constructor(
+    private appHttp: HttpService,
+    private appStorage: Storage
+  ) { }
 
   createMailFlags(systemMailFlags: any):Promise<Array<MailFlag>>{
 
@@ -159,6 +166,185 @@ export class MailsService {
     })
 
     return sysmailFlag
+
+  }
+
+  searchContact(searchTerm: string): Promise<Array<string>>{
+
+    this.searchedContacts = []
+
+    return new Promise<Array<string>>((resolve, reject) => {
+
+      const searchContactForm: FormData = new FormData()
+      searchContactForm.append('searchTerm',searchTerm)
+      searchContactForm.append('address',this.mailAccount.hostLoginAddress)
+
+      this.appHttp.postHttp(searchContactForm,'/mails/searchContact').then((resp: Array<string>) =>{
+
+        resp.forEach((mailContact: string) =>{
+
+          if (!this.searchedContacts.includes(mailContact)){
+
+            this.searchedContacts.push(mailContact)
+
+          }
+
+        })
+
+        resolve(resp)
+
+      }).catch((err: any) =>{
+
+        reject(err)
+
+      })
+
+    })
+
+  }
+
+  setDraft(newDraft?:boolean){
+
+    let flagId = 0;
+    this.mailFlags.forEach((mailFlag: MailFlag) =>{
+
+      if (mailFlag.flagName === 'Draft'){
+
+        flagId = mailFlag.flagId
+
+      }
+
+    })
+
+    this.appStorage.get('drafts').then((systemDrafts:Array<Draft>) =>{
+
+      if (systemDrafts !== null && systemDrafts.length!==0){
+
+        if (newDraft){
+          const idbMailHead: IdbMailHead = this.convertToIdb(flagId)
+          const newSysteDraft: Draft = {
+            mailObject: this.mailObject,
+            mailHead: idbMailHead,
+            mailBody: this.mailBody
+          }
+
+          systemDrafts.push(newSysteDraft)
+
+        }else{
+
+          systemDrafts.forEach((systemDraft: Draft) =>{
+
+            if (systemDraft.mailHead.mailObjectId === this.mailHead.mailObjectId){
+
+              const idbMailHead: IdbMailHead = this.convertToIdb(flagId)
+              systemDraft.mailHead = idbMailHead
+              systemDraft.mailBody = this.mailBody
+              systemDraft.mailObject = this.mailObject
+
+            }
+
+          })
+
+        }
+
+          this.appStorage.set('drafts',systemDrafts)
+      }else{
+
+      const systemDraft: Draft={
+        mailObject: this.mailObject,
+        mailHead: this.convertToIdb(flagId),
+        mailBody: this.mailBody
+      }
+
+      this.appStorage.set('drafts', [systemDraft])
+
+    }
+
+    })
+
+  }
+
+  convertToIdb(flagId: number): IdbMailHead{
+
+    const mailAttachments: Array<IdbMailAttachment>=[]
+    this.mailHead.mailAttachments.forEach((mailAtt: MailAttachment) =>{
+
+      const attLink: any = mailAtt.attLink?.href
+
+      const idbMailAtt: IdbMailAttachment={
+        attId: mailAtt.attId,
+        attName: mailAtt.attName,
+        attType: mailAtt.attType,
+        attExt: mailAtt.attExt,
+        objectId: mailAtt.objectId,
+        attLink: attLink
+      }
+
+      mailAttachments.push(idbMailAtt)
+
+    })
+
+    const mailCreationTime: any = this.mailHead.creationTime?.toISOString()
+
+    const idbMailHead: IdbMailHead={
+      mailObjectId: this.mailObject.mailObjectId,
+      mailSubject: this.mailHead.mailSubject,
+      mailCc: this.mailHead.mailCc,
+      mailBcc: this.mailHead.mailBcc,
+      mailReceipients: this.mailHead.mailReceipients,
+      mailAttachments: mailAttachments,
+      sender: this.mailHead.sender,
+      reply_to: this.mailHead.reply_to,
+      creationTime: mailCreationTime,
+      mailFlagId:flagId,
+      spam: this.mailHead.spam,
+      trashed: this.mailHead.trashed,
+      archived: this.mailHead.archived
+    }
+
+    return idbMailHead
+
+  }
+
+  convertToMailhead(idbMailHead: IdbMailHead): MailHead{
+
+    const mailAtts: Array<MailAttachment>=[]
+
+    idbMailHead.mailAttachments.forEach((idbMailAttachment: IdbMailAttachment) =>{
+
+      const mailAtt: MailAttachment = {
+        attId: idbMailAttachment.attId,
+        attName: idbMailAttachment.attName,
+        attType: idbMailAttachment.attType,
+        attExt: idbMailAttachment.attExt,
+        objectId: idbMailAttachment.objectId,
+        attLink:new URL(idbMailAttachment.attLink)
+      }
+
+      mailAtts.push(mailAtt)
+
+    })
+
+
+    const mailHead: MailHead = {
+      mailObjectId: idbMailHead.mailObjectId,
+      mailSubject: idbMailHead.mailSubject,
+      mailCc: idbMailHead.mailCc,
+      mailBcc: idbMailHead.mailBcc,
+      mailReceipients: idbMailHead.mailReceipients,
+      mailAttachments: mailAtts,
+      sender: idbMailHead.sender,
+      mailFlagId: idbMailHead.mailFlagId,
+      reply_to: idbMailHead.reply_to,
+      spam: idbMailHead.spam,
+      trashed: idbMailHead.trashed,
+      archived: idbMailHead.archived,
+      creationTime: new Date(idbMailHead.creationTime),
+      mailServerId:idbMailHead.mailServerId,
+      mailHeadId:idbMailHead.mailHeadId,
+    }
+
+    return mailHead
 
   }
 

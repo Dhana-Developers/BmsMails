@@ -5,7 +5,7 @@ declare global{
     interface Draft{
 
         mailObject:MailObject,
-        mailHead:MailHead,
+        mailHead:IdbMailHead,
         mailBody:MailBody
 
     }

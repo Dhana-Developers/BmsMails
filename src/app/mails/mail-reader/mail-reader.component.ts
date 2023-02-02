@@ -148,43 +148,7 @@ export class MailReaderComponent implements OnInit, AfterContentChecked {
           mailBodyParay: [],
           mailObjectId: mailObjectResp.mail_object_id
         }
-        this.appStorage.get('drafts').then((systemDrafts: Array<Draft>) =>{
-          this.appMails.systemDrafts=[]
-
-          const currentDraft: Draft = {
-            mailObject: this.appMails.mailObject,
-            mailHead: this.appMails.mailHead,
-            mailBody: this.appMails.mailBody
-          }
-
-          if (systemDrafts !== null){
-
-            systemDrafts.push(currentDraft)
-            this.appStorage.set('drafts', systemDrafts)
-
-            systemDrafts.forEach((systemDraft: any) =>{
-
-              if (systemDraft.mailHead.sender === this.appMails.mailAccount.hostLoginAddress){
-
-                this.appMails.systemDrafts.push(systemDraft);
-
-              }
-
-            })
-
-          }else{
-
-            this.appStorage.set('drafts', [currentDraft])
-
-            this.appMails.systemDrafts = [currentDraft]
-
-          }
-
-        }).catch((err: any) =>{
-
-          console.error(err);
-
-        })
+        this.appMails.setDraft(true)
 
         this.appMails.mailSection='Writer'
 

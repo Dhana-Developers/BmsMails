@@ -30,6 +30,7 @@ export class MailWriterComponent implements OnInit,AfterViewInit {
   public wordCounter=0;
   public bodyInit = false;
   public headInit = false;
+  private selectedContactInput: any = null
 
   constructor(
     private eleRef: ElementRef,
@@ -69,47 +70,7 @@ export class MailWriterComponent implements OnInit,AfterViewInit {
     }
     const mailSubject: string = evt.target.value;
     this.mailService.mailHead.mailSubject=mailSubject;
-    this.appStorage.get('drafts').then((systemDrafts:Array<Draft>) =>{
-
-      systemDrafts.forEach((systemDraft: Draft) =>{
-
-        if (systemDraft.mailHead.mailObjectId === this.mailService.mailHead.mailObjectId){
-
-          const mailAttachments: Array<string>=[]
-          this.mailService.mailHead.mailAttachments.forEach((mailAtt: MailAttachment) =>{
-
-            const idbMailAtt: any={
-              attId: mailAtt.attId,
-              attName: mailAtt.attName,
-              attType: mailAtt.attType,
-              attExt: mailAtt.attExt,
-              objectId: mailAtt.objectId,
-              attLink: mailAtt.attLink?.href
-            }
-
-            mailAttachments.push(idbMailAtt)
-
-          })
-
-          const idbMailHead: any={
-            mailObjectId: this.mailService.mailHead.mailObjectId,
-            mailSubject: this.mailService.mailHead.mailSubject,
-            mailCc: this.mailService.mailHead.mailCc,
-            mailBcc: this.mailService.mailHead.mailBcc,
-            mailReceipients: this.mailService.mailHead.mailReceipients,
-            mailAttachments,
-            sender: this.mailService.mailHead.sender,
-            reply_to: this.mailService.mailHead.reply_to
-          }
-
-          systemDraft.mailHead = idbMailHead
-
-        }
-
-      })
-      this.appStorage.set('drafts',systemDrafts)
-
-    })
+    this.mailService.setDraft()
   }
 
   addRecipient():void{
@@ -119,48 +80,7 @@ export class MailWriterComponent implements OnInit,AfterViewInit {
     if (!this.mailService.mailHead.mailReceipients.includes(receipientContact.value)){
 
       this.mailService.mailHead.mailReceipients.push(receipientContact.value);
-      this.appStorage.get('drafts').then((systemDrafts:Array<Draft>) =>{
-
-        systemDrafts.forEach((systemDraft: Draft) =>{
-
-          if (systemDraft.mailHead.mailObjectId === this.mailService.mailHead.mailObjectId){
-
-            const mailAttachments: Array<string>=[]
-            this.mailService.mailHead.mailAttachments.forEach((mailAtt: MailAttachment) =>{
-
-              const idbMailAtt: any={
-                attId: mailAtt.attId,
-                attName: mailAtt.attName,
-                attType: mailAtt.attType,
-                attExt: mailAtt.attExt,
-                objectId: mailAtt.objectId,
-                attLink: mailAtt.attLink?.href
-              }
-
-              mailAttachments.push(idbMailAtt)
-
-            })
-
-            const idbMailHead: any={
-              mailObjectId: this.mailService.mailHead.mailObjectId,
-              mailSubject: this.mailService.mailHead.mailSubject,
-              mailCc: this.mailService.mailHead.mailCc,
-              mailBcc: this.mailService.mailHead.mailBcc,
-              mailReceipients: this.mailService.mailHead.mailReceipients,
-              mailAttachments,
-              sender: this.mailService.mailHead.sender,
-              reply_to: this.mailService.mailHead.reply_to
-            }
-
-            systemDraft.mailHead = idbMailHead
-
-          }
-
-        })
-
-        this.appStorage.set('drafts',systemDrafts)
-
-      })
+      this.mailService.setDraft()
       receipientContact.value=''
 
     }
@@ -177,48 +97,6 @@ export class MailWriterComponent implements OnInit,AfterViewInit {
       if (!this.mailService.mailHead.mailCc.includes(receipientContact.value)){
 
         this.mailService.mailHead.mailCc.push(receipientContact.value);
-        this.appStorage.get('drafts').then((systemDrafts:Array<Draft>) =>{
-
-          systemDrafts.forEach((systemDraft: Draft) =>{
-
-            if (systemDraft.mailHead.mailObjectId === this.mailService.mailHead.mailObjectId){
-
-              const mailAttachments: Array<string>=[]
-              this.mailService.mailHead.mailAttachments.forEach((mailAtt: MailAttachment) =>{
-
-                const idbMailAtt: any={
-                  attId: mailAtt.attId,
-                  attName: mailAtt.attName,
-                  attType: mailAtt.attType,
-                  attExt: mailAtt.attExt,
-                  objectId: mailAtt.objectId,
-                  attLink: mailAtt.attLink?.href
-                }
-
-                mailAttachments.push(idbMailAtt)
-
-              })
-
-              const idbMailHead: any={
-                mailObjectId: this.mailService.mailHead.mailObjectId,
-                mailSubject: this.mailService.mailHead.mailSubject,
-                mailCc: this.mailService.mailHead.mailCc,
-                mailBcc: this.mailService.mailHead.mailBcc,
-                mailReceipients: this.mailService.mailHead.mailReceipients,
-                mailAttachments,
-                sender: this.mailService.mailHead.sender,
-                reply_to: this.mailService.mailHead.reply_to
-              }
-
-              systemDraft.mailHead = idbMailHead
-
-            }
-
-          })
-
-          this.appStorage.set('drafts',systemDrafts)
-
-        })
         receipientContact.value=''
 
       }
@@ -228,147 +106,26 @@ export class MailWriterComponent implements OnInit,AfterViewInit {
       if (!this.mailService.mailHead.mailBcc.includes(receipientContact.value)){
 
         this.mailService.mailHead.mailBcc.push(receipientContact.value);
-        this.appStorage.get('drafts').then((systemDrafts:Array<Draft>) =>{
-
-          systemDrafts.forEach((systemDraft: Draft) =>{
-
-            if (systemDraft.mailHead.mailObjectId === this.mailService.mailHead.mailObjectId){
-
-              const mailAttachments: Array<string>=[]
-              this.mailService.mailHead.mailAttachments.forEach((mailAtt: MailAttachment) =>{
-
-                const idbMailAtt: any={
-                  attId: mailAtt.attId,
-                  attName: mailAtt.attName,
-                  attType: mailAtt.attType,
-                  attExt: mailAtt.attExt,
-                  objectId: mailAtt.objectId,
-                  attLink: mailAtt.attLink?.href
-                }
-
-                mailAttachments.push(idbMailAtt)
-
-              })
-
-              const idbMailHead: any={
-                mailObjectId: this.mailService.mailHead.mailObjectId,
-                mailSubject: this.mailService.mailHead.mailSubject,
-                mailCc: this.mailService.mailHead.mailCc,
-                mailBcc: this.mailService.mailHead.mailBcc,
-                mailReceipients: this.mailService.mailHead.mailReceipients,
-                mailAttachments,
-                sender: this.mailService.mailHead.sender,
-                reply_to: this.mailService.mailHead.reply_to
-              }
-
-              systemDraft.mailHead = idbMailHead
-
-            }
-
-          })
-
-          this.appStorage.set('drafts',systemDrafts)
-
-        })
         receipientContact.value=''
 
       }
     }
+    
+    this.mailService.setDraft()
 
   }
 
   removeRecipient(recipient:string):void{
 
     this.mailService.mailHead.mailReceipients.splice(this.mailService.mailHead.mailReceipients.indexOf(recipient),1)
-    this.appStorage.get('drafts').then((systemDrafts:Array<Draft>) =>{
-
-      systemDrafts.forEach((systemDraft: Draft) =>{
-
-        if (systemDraft.mailHead.mailObjectId === this.mailService.mailHead.mailObjectId){
-
-          const mailAttachments: Array<string>=[]
-          this.mailService.mailHead.mailAttachments.forEach((mailAtt: MailAttachment) =>{
-
-            const idbMailAtt: any={
-              attId: mailAtt.attId,
-              attName: mailAtt.attName,
-              attType: mailAtt.attType,
-              attExt: mailAtt.attExt,
-              objectId: mailAtt.objectId,
-              attLink: mailAtt.attLink?.href
-            }
-
-            mailAttachments.push(idbMailAtt)
-
-          })
-
-          const idbMailHead: any={
-            mailObjectId: this.mailService.mailHead.mailObjectId,
-            mailSubject: this.mailService.mailHead.mailSubject,
-            mailCc: this.mailService.mailHead.mailCc,
-            mailBcc: this.mailService.mailHead.mailBcc,
-            mailReceipients: this.mailService.mailHead.mailReceipients,
-            mailAttachments,
-            sender: this.mailService.mailHead.sender,
-            reply_to: this.mailService.mailHead.reply_to
-          }
-
-          systemDraft.mailHead = idbMailHead
-
-        }
-
-      })
-
-      this.appStorage.set('drafts',systemDrafts)
-
-    })
+    this.mailService.setDraft()
 
   }
 
   removeCc(recipient:string):void{
 
     this.mailService.mailHead.mailCc.splice(this.mailService.mailHead.mailCc.indexOf(recipient),1)
-    this.appStorage.get('drafts').then((systemDrafts:Array<Draft>) =>{
-
-      systemDrafts.forEach((systemDraft: Draft) =>{
-
-        if (systemDraft.mailHead.mailObjectId === this.mailService.mailHead.mailObjectId){
-
-          const mailAttachments: Array<string>=[]
-          this.mailService.mailHead.mailAttachments.forEach((mailAtt: MailAttachment) =>{
-
-            const idbMailAtt: any={
-              attId: mailAtt.attId,
-              attName: mailAtt.attName,
-              attType: mailAtt.attType,
-              attExt: mailAtt.attExt,
-              objectId: mailAtt.objectId,
-              attLink: mailAtt.attLink?.href
-            }
-
-            mailAttachments.push(idbMailAtt)
-
-          })
-
-          const idbMailHead: any={
-            mailObjectId: this.mailService.mailHead.mailObjectId,
-            mailSubject: this.mailService.mailHead.mailSubject,
-            mailCc: this.mailService.mailHead.mailCc,
-            mailBcc: this.mailService.mailHead.mailBcc,
-            mailReceipients: this.mailService.mailHead.mailReceipients,
-            mailAttachments,
-            sender: this.mailService.mailHead.sender,
-            reply_to: this.mailService.mailHead.reply_to
-          }
-
-          systemDraft.mailHead = idbMailHead
-        }
-
-      })
-
-      this.appStorage.set('drafts',systemDrafts)
-
-    })
+    this.mailService.setDraft()
 
   }
 
@@ -376,48 +133,8 @@ export class MailWriterComponent implements OnInit,AfterViewInit {
   removeBcc(recipient:string):void{
 
     this.mailService.mailHead.mailBcc.splice(this.mailService.mailHead.mailBcc.indexOf(recipient),1)
-    this.appStorage.get('drafts').then((systemDrafts:Array<Draft>) =>{
 
-      systemDrafts.forEach((systemDraft: Draft) =>{
-
-        if (systemDraft.mailHead.mailObjectId === this.mailService.mailHead.mailObjectId){
-
-          const mailAttachments: Array<string>=[]
-          this.mailService.mailHead.mailAttachments.forEach((mailAtt: MailAttachment) =>{
-
-            const idbMailAtt: any={
-              attId: mailAtt.attId,
-              attName: mailAtt.attName,
-              attType: mailAtt.attType,
-              attExt: mailAtt.attExt,
-              objectId: mailAtt.objectId,
-              attLink: mailAtt.attLink?.href
-            }
-
-            mailAttachments.push(idbMailAtt)
-
-          })
-
-          const idbMailHead: any={
-            mailObjectId: this.mailService.mailHead.mailObjectId,
-            mailSubject: this.mailService.mailHead.mailSubject,
-            mailCc: this.mailService.mailHead.mailCc,
-            mailBcc: this.mailService.mailHead.mailBcc,
-            mailReceipients: this.mailService.mailHead.mailReceipients,
-            mailAttachments,
-            sender: this.mailService.mailHead.sender,
-            reply_to: this.mailService.mailHead.reply_to
-          }
-
-          systemDraft.mailHead = idbMailHead
-
-        }
-
-      })
-
-      this.appStorage.set('drafts',systemDrafts)
-
-    })
+      this.mailService.setDraft()
 
   }
 
@@ -446,6 +163,13 @@ export class MailWriterComponent implements OnInit,AfterViewInit {
 
     if (mailBody !== '' && mailBody!== undefined){
 
+        if(!this.bodyInit){
+
+          evt.target.value = this.mailService.mailBody.mailBodyPayload
+
+          this.bodyInit=true
+
+        }
         const bodyTexts:Array<string> = mailBody.split(' ')
 
         const mailsInBody: Array<string>=[]
@@ -494,59 +218,11 @@ export class MailWriterComponent implements OnInit,AfterViewInit {
 
         const bodyParas: Array<string>=porcessedBody.split('\n')
 
-          this.mailService.mailBody.mailBodyParay=bodyParas
+        this.mailService.mailBody.mailBodyParay=bodyParas
 
-          this.appStorage.get('drafts').then((systemDrafts:Array<Draft>) =>{
+        this.mailService.mailBody.mailBodyPayload=porcessedBody
 
-            systemDrafts.forEach((systemDraft: Draft) =>{
-
-              if (systemDraft.mailHead.mailObjectId === this.mailService.mailHead.mailObjectId){
-
-                const mailAttachments: Array<string>=[]
-                this.mailService.mailHead.mailAttachments.forEach((mailAtt: MailAttachment) =>{
-
-                  const idbMailAtt: any={
-                    attId: mailAtt.attId,
-                    attName: mailAtt.attName,
-                    attType: mailAtt.attType,
-                    attExt: mailAtt.attExt,
-                    objectId: mailAtt.objectId,
-                    attLink: mailAtt.attLink?.href
-                  }
-
-                  mailAttachments.push(idbMailAtt)
-
-                })
-
-                const idbMailHead: any={
-                  mailObjectId: this.mailService.mailHead.mailObjectId,
-                  mailSubject: this.mailService.mailHead.mailSubject,
-                  mailCc: this.mailService.mailHead.mailCc,
-                  mailBcc: this.mailService.mailHead.mailBcc,
-                  mailReceipients: this.mailService.mailHead.mailReceipients,
-                  mailAttachments,
-                  sender: this.mailService.mailHead.sender,
-                  reply_to: this.mailService.mailHead.reply_to
-                }
-
-                systemDraft.mailHead = idbMailHead
-                systemDraft.mailBody = this.mailService.mailBody
-
-              }
-
-            })
-            this.mailService.mailBody.mailBodyPayload=porcessedBody
-            this.appStorage.set('drafts',systemDrafts)
-
-          })
-
-        if(!this.bodyInit){
-
-          evt.target.value = this.mailService.mailBody.mailBodyPayload
-
-          this.bodyInit=true
-
-        }
+        this.mailService.setDraft()
 
     }
 
@@ -624,7 +300,6 @@ export class MailWriterComponent implements OnInit,AfterViewInit {
                 msgIndex+=1
 
               })
-              this.mailService.systemDrafts = systemDrafts
               this.appStorage.set('drafts',systemDrafts)
               loaderCtrl.dismiss()
               this.showAlert('Mail Sent')
@@ -722,6 +397,50 @@ export class MailWriterComponent implements OnInit,AfterViewInit {
       })
 
     })
+
+  }
+
+  searcheContact(evt: any){
+
+    this.mailService.searchedContacts=[]
+    this.selectedContactInput = evt.target
+
+    if (evt.target.value !== ''){
+
+
+      this.mailService.searchContact(evt.target.value)
+
+    }
+
+  }
+
+  selectContact(contact: string){
+
+    if (this.selectedContactInput !== null){
+
+      if (this.selectedContactInput.classList.contains('receipientContact')){
+
+        this.mailService.mailHead.mailReceipients.push(contact)
+
+      }else{
+
+        if (this.ccOrBccFlag === 'Cc'){
+
+          this.mailService.mailHead.mailCc.push(contact)
+
+        }else{
+
+          this.mailService.mailHead.mailBcc.push(contact)
+        }
+
+      }
+
+      this.mailService.setDraft()
+
+      this.mailService.searchedContacts = []
+      this.selectedContactInput.value=''
+
+    }
 
   }
 
