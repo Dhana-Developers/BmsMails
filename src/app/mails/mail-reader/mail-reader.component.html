@@ -20,6 +20,18 @@
           <ion-buttons slot="end">
 
             <ion-button color="primary"
+            (click)="this.replyTo(this.appMails.mailHead.sender)"
+            *ngIf="this.appMails.mailHead.sender!== this.appMails.mailAccount.hostLoginAddress">
+              <ion-icon slot="icon-only" name="return-down-forward-outline" class="reply-button"></ion-icon>
+            </ion-button>
+
+            <ion-button color="primary"
+            *ngIf="!this.appMails.mailHead.spam&&!this.appMails.mailHead.trashed&&!this.appMails.mailHead.archived"
+            (click)="this.forwardEmail()">
+              <ion-icon slot="icon-only" name="return-up-forward-outline"></ion-icon>
+            </ion-button>
+
+            <ion-button color="primary"
             (click)="this.createAttachmentModal()">
               <ion-icon name="attach-outline" slot="icon-only"></ion-icon>
             </ion-button>
@@ -29,14 +41,28 @@
         </ion-toolbar>
 
       </ion-card-title>
-
-      <ion-card-title>
-        {{this.appMails.mailHead.mailSubject}}
-      </ion-card-title>
-
       <ion-card-subtitle>
-        Sender: {{this.appMails.mailHead.sender}}, At: {{this.appMails.mailHead.creationTime}}
+        <ion-item lines="none">
+          <ion-label>
+            <p style="font-size: small;text-transform: lowercase;">
+              {{this.appMails.mailHead.sender}}
+            </p>
+            <p style="font-size: small;text-transform: capitalize;">
+              {{this.getMonth(this.appMails.mailHead.creationTime?.getMonth())}}
+              {{this.appMails.mailHead.creationTime?.getDate()}},
+              {{this.appMails.mailHead.creationTime?.getFullYear()}}
+              {{this.appMails.mailHead.creationTime?.getHours()}}:{{this.appMails.mailHead.creationTime?.getMinutes()}}
+            </p>
+          </ion-label>
+        </ion-item>
       </ion-card-subtitle>
+      <ion-card-title>
+        <ion-item lines="none">
+          <ion-label class="ion-text-wrap">
+            {{this.appMails.mailHead.mailSubject}}
+          </ion-label>
+        </ion-item>
+      </ion-card-title>
 
     </ion-card-header>
 

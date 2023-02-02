@@ -101,6 +101,8 @@ export class MailsListComponent implements OnInit {
 
       this.appHttp.postHttp(fetchMailForm,'/mails/getMailBody').then((resp: any) =>{
 
+        this.mailService.mailObject.mailObjectId = mailObjId
+
         this.mailService.mailHeads.forEach((mailHead: MailHead) =>{
 
           if (mailHead.mailHeadId === mailHeadId){
