@@ -142,7 +142,8 @@
       </p>
       <table>
           <tr>
-              <td style="padding: 10px;box-sizing: boader-box;" class="footerMedia {{this.mailService.footerMediaClass}}">
+              <td style="padding: 10px;box-sizing: boader-box;" class="footerMedia {{this.mailService.footerMediaClass}}"
+              *ngIf="this.mailService.chosenFooter.footerMedia!==null">
                 <div class="vWMFDImgHolder">
                     <img src="{{this.appHttp.getBaseLink()}}{{this.mailService.chosenFooter.footerMedia.value}}" class="vWMFDImgTag"
                     style="width: 110px;">
