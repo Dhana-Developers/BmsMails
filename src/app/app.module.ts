@@ -15,7 +15,7 @@ import { ReusablesModule } from './reusables/reusables.module';
 @NgModule({
   declarations: [AppComponent],
   imports: [
-    BrowserModule,
+    BrowserModule.withServerTransition({ appId: 'serverApp' }),
     IonicModule.forRoot(),
     AppRoutingModule,
     BaseServicesModule,
