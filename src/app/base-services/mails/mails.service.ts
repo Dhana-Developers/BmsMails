@@ -15,6 +15,8 @@ export class MailsService {
     domain: ''
   }
 
+  private mailContacts: Array<Contact>=[]
+
   public mailServers: Array<MailServer>=[]
   public mailFooterPresent: boolean = false;
   public mailFooterId=0;
@@ -345,6 +347,45 @@ export class MailsService {
     }
 
     return mailHead
+
+  }
+
+  getMailContacts(): Array<Contact>{
+    return this.mailContacts
+  }
+
+  setMailContacts(mailContacts: Array<Contact>){
+    this.mailContacts=mailContacts
+  }
+
+  getMailcontact(contactEmail: string): Contact{
+
+    let mailContact: Contact={
+      email: '',
+      type: ''
+    }
+
+    this.mailContacts.forEach((lclMailContact: Contact) =>{
+
+      if (lclMailContact.email == contactEmail){
+
+        mailContact = lclMailContact
+
+      }
+
+    })
+
+    return mailContact
+
+  }
+
+  addMailContact(mailContacts: Array<Contact>){
+
+    mailContacts.forEach((mailContact: Contact) =>{
+
+      this.mailContacts.push(mailContact)
+
+    })
 
   }
 

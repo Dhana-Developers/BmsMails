@@ -18,36 +18,48 @@
       </ion-card-title>
 
       <ion-card-subtitle>
-        <ion-chip *ngFor="let receipient of this.mailService.mailHead.mailReceipients">
-          <ion-avatar>
-            <img alt="{{receipient}}" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
-          </ion-avatar>
-          <ion-label>{{receipient}}</ion-label>
-          <ion-icon name="close-circle"
-          (click)="this.removeRecipient(receipient)"></ion-icon>
-        </ion-chip>
+        <ion-item lines="none">
+          <ion-label>
+            <ion-chip *ngFor="let receipient of this.mailService.mailHead.mailReceipients">
+              <ion-avatar>
+                <img alt="{{receipient}}" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+              </ion-avatar>
+              <ion-label style="font-size: smaller;text-transform:lowercase;">{{receipient}}</ion-label>
+              <ion-icon name="close-circle"
+              (click)="this.removeRecipient(receipient)"></ion-icon>
+            </ion-chip>
+          </ion-label>
+        </ion-item>
       </ion-card-subtitle>
 
       <ion-card-subtitle>
-        <ion-chip *ngFor="let receipient of this.mailService.mailHead.mailCc">
-          <ion-avatar>
-            <img alt="{{receipient}}" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
-          </ion-avatar>
-          <ion-label>{{receipient}}</ion-label>
-          <ion-icon name="close-circle"
-          (click)="this.removeCc(receipient)"></ion-icon>
-        </ion-chip>
+        <ion-item lines="none">
+          <ion-label>
+            <ion-chip *ngFor="let receipient of this.mailService.mailHead.mailCc">
+              <ion-avatar>
+                <img alt="{{receipient}}" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+              </ion-avatar>
+              <ion-label style="font-size: smaller;text-transform:lowercase;">{{receipient}}</ion-label>
+              <ion-icon name="close-circle"
+              (click)="this.removeCc(receipient)"></ion-icon>
+            </ion-chip>
+          </ion-label>
+        </ion-item>
       </ion-card-subtitle>
 
       <ion-card-subtitle>
-        <ion-chip *ngFor="let receipient of this.mailService.mailHead.mailBcc">
-          <ion-avatar>
-            <img alt="{{receipient}}" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
-          </ion-avatar>
-          <ion-label>{{receipient}}</ion-label>
-          <ion-icon name="close-circle"
-          (click)="this.removeBcc(receipient)"></ion-icon>
-        </ion-chip>
+        <ion-item lines="none">
+          <ion-label>
+            <ion-chip *ngFor="let receipient of this.mailService.mailHead.mailBcc">
+              <ion-avatar>
+                <img alt="{{receipient}}" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+              </ion-avatar>
+              <ion-label style="font-size: smaller;text-transform:lowercase;">{{receipient}}</ion-label>
+              <ion-icon name="close-circle"
+              (click)="this.removeBcc(receipient)"></ion-icon>
+            </ion-chip>
+          </ion-label>
+        </ion-item>
       </ion-card-subtitle>
 
       <ion-card-subtitle>
@@ -78,7 +90,7 @@
       </ion-card-subtitle>
 
       <ion-card-subtitle class="nosite ccOrBccInput">
-        <ion-item>
+        <ion-item lines="none">
           <ion-input type="email" placeholder="{{this.ccOrBccFlag}}" class="ccOrBccInputTxt"
           (ionChange)="this.searcheContact($event)"></ion-input>
           <ion-button fill="clear" color="primary"
@@ -91,14 +103,14 @@
       <ion-card-subtitle>
         <ion-item>
           <ion-input type="email" placeholder="johndoe@example.com" class="receipientContact"
-          (ionChange)="this.searcheContact($event)"></ion-input>
+          (ionChange)="this.searcheContact($event)" style="font-size: smaller;text-transform:lowercase;"></ion-input>
           <ion-button fill="clear" color="primary"
           (click)="this.addRecipient()">
             <ion-icon slot="end" name="add-circle-outline"></ion-icon>
           </ion-button>
         </ion-item>
         <ion-item button *ngFor="let searchedContact of this.mailService.searchedContacts"
-        (click)="this.selectContact(searchedContact)">
+        (click)="this.selectContact(searchedContact)" lines="none">
           <ion-label>
             {{searchedContact}}
           </ion-label>
@@ -108,8 +120,8 @@
     </ion-card-header>
 
     <ion-card-content>
-      <ion-item>
-        <ion-label position="floating">Subject</ion-label>
+      <ion-item lines="none">
+        <ion-label position="floating" color="primary">Subject</ion-label>
         <ion-input type="text" placeholder="{{this.mailService.mailHead.mailSubject}}"
         (ionChange)="this.setSubject($event)"></ion-input>
       </ion-item>

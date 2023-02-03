@@ -137,6 +137,15 @@ export class MailsListComponent implements OnInit {
           mailBodyType:resp.bodyType
         }
 
+        const mailContacts: Array<Contact>=[]
+        resp.mailContacts.forEach((serverContact: any) => {
+          mailContacts.push({
+            email: serverContact.email,
+            type: serverContact.type
+          })
+        });
+        this.mailService.setMailContacts(mailContacts)
+
         this.mailService.mailBody=mailBody
         ionLoader.dismiss()
         this.appRouter.navigateByUrl('mails/mailReader')
@@ -377,29 +386,32 @@ export class MailsListComponent implements OnInit {
       this.appHttp.postHttp(clearMailFlagForm,'/mails/clearMailFlag').then((resp: any) =>{
 
         this.appStorage.get('drafts').then((systemDrafts:Array<Draft>) =>{
+
+          const draftsToDelete: Array<Draft> = []
           systemDrafts.forEach((systemDraft: Draft) =>{
 
             if (systemDraft.mailHead.sender === this.mailService.mailAccount.hostLoginAddress){
 
               if (this.mailService.chosenFlag.flagName === 'Trash'&&
               systemDraft.mailHead.trashed){
-
-                systemDrafts.splice(systemDrafts.indexOf(systemDraft),1)
-
+                draftsToDelete.push(systemDraft)
               }else if (this.mailService.chosenFlag.flagName === 'Spam'&&
               systemDraft.mailHead.spam){
-
-                systemDrafts.splice(systemDrafts.indexOf(systemDraft),1)
-
+                draftsToDelete.push(systemDraft)
               }else if (this.mailService.chosenFlag.flagName === 'Archive'&&
               systemDraft.mailHead.archived){
-
-                systemDrafts.splice(systemDrafts.indexOf(systemDraft),1)
-
+                draftsToDelete.push(systemDraft)
               }
 
             }
           })
+
+          draftsToDelete.forEach((draftToDelete: Draft) =>{
+
+            systemDrafts.splice(systemDrafts.indexOf(draftToDelete,1))
+
+          })
+
           this.appStorage.set('drafts',systemDrafts)
           this.mailService.mailHeads=[]
           loader.dismiss()

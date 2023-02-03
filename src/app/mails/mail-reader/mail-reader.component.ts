@@ -95,7 +95,7 @@ export class MailReaderComponent implements OnInit, AfterContentChecked {
 
 
 
-  composeMail(recipientContact: string):void{
+  composeMail(recipientContacts: Array<string>,cc:Array<string>,bcc: Array<string>):void{
 
     const composeMailForm: FormData = new FormData()
 
@@ -126,12 +126,14 @@ export class MailReaderComponent implements OnInit, AfterContentChecked {
           mailObjectId: mailObjectResp.mail_object_id
         }
 
+
+
         this.appMails.mailHead={
           mailObjectId: mailObjectResp.mail_object_id,
           mailSubject: '',
-          mailCc: [],
-          mailBcc: [],
-          mailReceipients: [recipientContact],
+          mailCc: cc,
+          mailBcc: bcc,
+          mailReceipients: recipientContacts,
           mailAttachments: [],
           sender: mailObjectResp.sender,
           reply_to: mailObjectResp.reply_to,
@@ -186,26 +188,49 @@ export class MailReaderComponent implements OnInit, AfterContentChecked {
 
   }
 
-  showAlert(alertTitle:string, alertMsg: string): Promise<HTMLIonAlertElement>{
+  showAlert(alertMsg: string): Promise<HTMLIonAlertElement>{
 
     return new Promise<HTMLIonAlertElement>((resolve, reject) => {
 
-      this.alertCtrl.create({
-        header:alertTitle,
-        message: alertMsg,
-        buttons:[
+      let alertButtons: Array<any>=
+      [
+
+        {
+          text:'Cancel',
+          role:'cancel'
+        },
+        {
+          text:'Ok',
+          role:'reply'
+        }
+
+      ]
+
+      if (this.appMails.getMailContacts().length>0){
+
+        alertButtons =
+        [
 
           {
             text:'Cancel',
             role:'cancel'
           },
-
+          {
+            text:'Reply All',
+            role:'replyall'
+          },
           {
             text:'Ok',
             role:'reply'
           }
 
         ]
+
+      }
+
+      this.alertCtrl.create({
+        message: alertMsg,
+        buttons: alertButtons
       }).then((alertEle: HTMLIonAlertElement) =>{
 
         alertEle.present()
@@ -218,15 +243,60 @@ export class MailReaderComponent implements OnInit, AfterContentChecked {
 
   }
 
+  showNativeAlert(title: string,msg: string): Promise<HTMLIonAlertElement>{
+
+    return new Promise<HTMLIonAlertElement>((resolve, reject) => {
+
+      this.alertCtrl.create({
+        header: title,
+        message: msg,
+        buttons:[
+          {
+            text:'Ok',
+            role:'cancel'
+          }
+
+        ]
+      }).then((alertEle: HTMLIonAlertElement) =>{
+
+        alertEle.present()
+
+        resolve(alertEle)
+
+      })
+
+    })
+  }
+
   replyTo(recipientContact: string){
 
-    this.showAlert('Reply', 'Reply to '+recipientContact).then((alertEle: HTMLIonAlertElement) =>{
+    this.showAlert('Reply to '+recipientContact).then((alertEle: HTMLIonAlertElement) =>{
 
       alertEle.onDidDismiss().then((evtOverlay: any) =>{
 
         if (evtOverlay.role === 'reply'){
 
-          this.composeMail(recipientContact)
+          this.composeMail([recipientContact],[],[])
+
+        }else if (evtOverlay.role === 'replyall'){
+
+          const mailBcc: Array<string> = []
+          const mailCc: Array<string> = []
+          const mailReceipients: Array<string> = []
+
+          this.appMails.getMailContacts().forEach((mailContact: Contact) =>{
+
+            if (mailContact.type === 'cc'){
+              mailCc.push(mailContact.email)
+            }else if (mailContact.type === 'bcc'){
+              mailBcc.push(mailContact.email)
+            }else{
+              mailReceipients.push(mailContact.email)
+            }
+
+          })
+
+          this.composeMail(mailReceipients,mailCc,mailBcc)
 
         }
 
@@ -284,7 +354,7 @@ export class MailReaderComponent implements OnInit, AfterContentChecked {
 
           if (overlayEvent.data.values.userContact === ''){
 
-            this.showAlert('Mail Forwarding','Please fill all required details.')
+            this.showNativeAlert('Mail Forwarding','Please fill all required details.')
 
           }else{
 
@@ -301,11 +371,11 @@ export class MailReaderComponent implements OnInit, AfterContentChecked {
 
                 if (resp.status === 1){
 
-                  this.showAlert('Mail Forwarding','Mail forwarded')
+                  this.showNativeAlert('Mail Forwarding','Mail forwarded')
 
                 }else{
 
-                  this.showAlert('Mail Forwarding','Mail forwarding failed')
+                  this.showNativeAlert('Mail Forwarding','Mail forwarding failed')
 
                 }
 
@@ -313,7 +383,7 @@ export class MailReaderComponent implements OnInit, AfterContentChecked {
 
                 console.error(err);
                 loadingEle.dismiss()
-                this.showAlert('Mail Forwarding','Error occured, please try again.')
+                this.showNativeAlert('Mail Forwarding','Error occured, please try again.')
 
               })
 

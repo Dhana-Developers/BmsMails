@@ -69,10 +69,39 @@
         </ion-item-option>
       </ion-item-options>
 
-      <ion-item>
+      <ion-item
+      *ngIf="this.mailService.getMailFlag(mailHead.mailFlagId).flagName !== 'Draft'">
         <ion-label button
         (click)="this.readMail(this.mailService.chosenFlag.flagId,
         mailHead.mailObjectId,mailHead.mailServerId,mailHead.mailHeadId)">
+          <p
+          style="font-size: small;">
+              {{mailHead.sender}}
+          </p>
+          <h2>
+            {{mailHead.mailSubject}}
+          </h2>
+          <ion-label color="{{this.mailService.getMailFlag(mailHead.mailFlagId).flaColor}}">
+            {{this.mailService.getMailFlag(mailHead.mailFlagId).flagName}}
+          </ion-label >
+        </ion-label>
+        <p *ngIf="this.subtractDate(this.mailHead.creationTime)<24; else monthView"
+        style="font-size: small;">
+          {{this.mailHead.creationTime?.getHours()}} : {{this.mailHead.creationTime?.getMinutes()}}
+        </p>
+        <ng-template #monthView>
+          <p
+          style="font-size: small;">
+            {{this.getMonth(mailHead.creationTime?.getMonth())}} {{mailHead.creationTime?.getDate()}}
+          </p>
+        </ng-template>
+      </ion-item>
+
+
+      <ion-item
+      *ngIf="this.mailService.getMailFlag(mailHead.mailFlagId).flagName === 'Draft'">
+        <ion-label button
+        (click)="this.editMail(mailHead.mailObjectId)">
           <p
           style="font-size: small;">
               {{mailHead.sender}}
@@ -104,12 +133,15 @@
         <ion-icon slot="top" name="trash-bin-outline"></ion-icon>
         Spam
       </ion-item-option>
+
       <ion-item-option color="primary"
       *ngIf="this.mailService.getMailFlag(mailHead.mailFlagId).flagName === 'Draft'"
-      (click)="this.editMail(mailHead.mailObjectId)">
-        <ion-icon slot="top" name="document-text-outline"></ion-icon>
-        Edit
+      (click)="this.readMail(this.mailService.chosenFlag.flagId,
+      mailHead.mailObjectId,mailHead.mailServerId,mailHead.mailHeadId)">
+        <ion-icon slot="top" name="glasses-outline"></ion-icon>
+        View
       </ion-item-option>
+
         <ion-item-option color="danger" fill="clear"
         *ngIf="!mailHead.trashed"
         (click)="this.changeMailFlag(mailHead.mailObjectId,'Trash',$event)"

@@ -26,7 +26,8 @@
             </ion-button>
 
             <ion-button color="primary"
-            *ngIf="!this.appMails.mailHead.spam&&!this.appMails.mailHead.trashed&&!this.appMails.mailHead.archived"
+            *ngIf="!this.appMails.mailHead.spam&&!this.appMails.mailHead.trashed&&!this.appMails.mailHead.archived&&
+            this.appMails.getMailFlag(this.appMails.mailHead.mailFlagId).flagName !== 'Draft'"
             (click)="this.forwardEmail()">
               <ion-icon slot="icon-only" name="return-up-forward-outline"></ion-icon>
             </ion-button>
