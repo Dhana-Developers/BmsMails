@@ -89,7 +89,7 @@ export class UserService {
 
   }
 
-  setMembership(memberShipId: string){
+  setMembership(memberShipId: string,dissableNav?:boolean){
 
     const getMembershipForm: FormData = new FormData();
 
@@ -189,7 +189,13 @@ export class UserService {
 
       });
 
-      this.enableNav()
+      if (dissableNav!== undefined){
+        if (dissableNav !==true){
+          this.enableNav()
+        }
+      }else{
+        this.enableNav()
+      }
 
 
 

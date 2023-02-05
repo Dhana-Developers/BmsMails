@@ -72,12 +72,28 @@ export class BsmNavComponent implements OnInit {
 
           resp.forEach((mailHeadResp: any) =>{
 
+            const recipients: Array<string> = []
+
+            mailHeadResp.recipients.forEach((mailRecipient: any) =>{
+              recipients.push(mailRecipient.contact)
+            })
+            const bccs: Array<string> = []
+
+            mailHeadResp.bccs.forEach((mailBcc: any) =>{
+              bccs.push(mailBcc.contact)
+            })
+            const ccs: Array<string> = []
+
+            mailHeadResp.ccs.forEach((mailCc: any) =>{
+              ccs.push(mailCc.contact)
+            })
+
             const fetchedMailHead:MailHead={
               mailObjectId: mailHeadResp.mailObjectId,
               mailSubject: mailHeadResp.mailSubject,
-              mailCc: [],
-              mailBcc: [],
-              mailReceipients: [],
+              mailCc: ccs,
+              mailBcc: bccs,
+              mailReceipients: recipients,
               mailAttachments: [],
               sender: mailHeadResp.sender,
               reply_to: mailHeadResp.sender,

@@ -75,13 +75,21 @@
         (click)="this.readMail(this.mailService.chosenFlag.flagId,
         mailHead.mailObjectId,mailHead.mailServerId,mailHead.mailHeadId)">
           <p
-          style="font-size: small;">
+          style="font-size: small;"
+          *ngIf="this.mailService.getMailFlag(mailHead.mailFlagId).flagName !== 'Sent'; else sentHeader">
               {{mailHead.sender}}
           </p>
+          <ng-template #sentHeader>
+            <p
+          style="font-size: small;">
+              {{mailHead.mailReceipients[0]}}
+          </p>
+          </ng-template>
           <h2>
             {{mailHead.mailSubject}}
           </h2>
-          <ion-label color="{{this.mailService.getMailFlag(mailHead.mailFlagId).flaColor}}">
+          <ion-label color="{{this.mailService.getMailFlag(mailHead.mailFlagId).flaColor}}"
+          style="font-size: smaller;">
             {{this.mailService.getMailFlag(mailHead.mailFlagId).flagName}}
           </ion-label >
         </ion-label>
@@ -104,12 +112,13 @@
         (click)="this.editMail(mailHead.mailObjectId)">
           <p
           style="font-size: small;">
-              {{mailHead.sender}}
+          {{mailHead.mailReceipients[0]}}
           </p>
           <h2>
             {{mailHead.mailSubject}}
           </h2>
-          <ion-label color="{{this.mailService.getMailFlag(mailHead.mailFlagId).flaColor}}">
+          <ion-label color="{{this.mailService.getMailFlag(mailHead.mailFlagId).flaColor}}"
+          style="font-size: smaller;">
             {{this.mailService.getMailFlag(mailHead.mailFlagId).flagName}}
           </ion-label >
         </ion-label>

@@ -147,6 +147,10 @@ export class MailsAccountComponent implements OnInit {
 
             this.showAlert('Account Creation','Successfully created Department Mail account')
 
+          }else if (accountCreationResp.status === 3){
+
+            this.showAlert('Account Change','Successfully changed account details.')
+
           }
 
         }).catch((err: any) =>{

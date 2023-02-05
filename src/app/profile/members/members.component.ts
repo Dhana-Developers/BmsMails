@@ -144,18 +144,36 @@ export class MembersComponent implements OnInit {
 
   }
 
-  showAlert(msg: string): Promise<HTMLIonAlertElement>{
+  showAlert(msg: string, editAccount?: true): Promise<HTMLIonAlertElement>{
+
+    let alertButtons: Array<any> = [
+
+      {
+        text:'OK',
+        role:'cancel'
+      }
+    ]
+
+    if (editAccount){
+      alertButtons = [
+
+        {
+          text:'Edit',
+          role:'edit'
+        },
+
+        {
+          text:'OK',
+          role:'cancel'
+        }
+      ]
+    }
 
     return new Promise<HTMLIonAlertElement>((resolve) => {
 
       this.alertCtrl.create({
         message: msg,
-        buttons:[
-          {
-            text:'OK',
-            role:'cancel'
-          }
-        ]
+        buttons:alertButtons
       }).then((altctrl: HTMLIonAlertElement) =>{
 
         altctrl.present()
@@ -209,13 +227,23 @@ export class MembersComponent implements OnInit {
 
           })
         }else{
-          this.showAlert('You don\'t have an account yet.')
+          this.showAlert('Wrong account credentials.',true).then((alertEle: HTMLIonAlertElement) =>{
+
+            alertEle.onDidDismiss().then((evtOverLay: any) =>{
+
+              if (evtOverLay.role ==='edit'){
+                this.createMailAccount('member')
+              }
+
+            })
+
+          })
         }
 
       }).catch((err: any) =>{
 
         loaderEle.dismiss()
-        this.showAlert('Error occured.')
+        this.showAlert('Error occured. Please Try again.')
         console.error(err);
 
       })

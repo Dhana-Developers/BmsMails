@@ -387,32 +387,28 @@ export class MailsListComponent implements OnInit {
 
         this.appStorage.get('drafts').then((systemDrafts:Array<Draft>) =>{
 
-          const draftsToDelete: Array<Draft> = []
+          const draftsToDelete: Array<number> = []
           systemDrafts.forEach((systemDraft: Draft) =>{
 
             if (systemDraft.mailHead.sender === this.mailService.mailAccount.hostLoginAddress){
 
               if (this.mailService.chosenFlag.flagName === 'Trash'&&
               systemDraft.mailHead.trashed){
-                draftsToDelete.push(systemDraft)
+                draftsToDelete.push(systemDraft.mailHead.mailObjectId)
               }else if (this.mailService.chosenFlag.flagName === 'Spam'&&
               systemDraft.mailHead.spam){
-                draftsToDelete.push(systemDraft)
+                draftsToDelete.push(systemDraft.mailHead.mailObjectId)
               }else if (this.mailService.chosenFlag.flagName === 'Archive'&&
               systemDraft.mailHead.archived){
-                draftsToDelete.push(systemDraft)
+                draftsToDelete.push(systemDraft.mailHead.mailObjectId)
               }
 
             }
           })
 
-          draftsToDelete.forEach((draftToDelete: Draft) =>{
+          const filteredDrafts: Array<Draft> = systemDrafts.filter((systemDraft: Draft) => !draftsToDelete.includes(systemDraft.mailHead.mailObjectId))
 
-            systemDrafts.splice(systemDrafts.indexOf(draftToDelete,1))
-
-          })
-
-          this.appStorage.set('drafts',systemDrafts)
+          this.appStorage.set('drafts',filteredDrafts)
           this.mailService.mailHeads=[]
           loader.dismiss()
         })

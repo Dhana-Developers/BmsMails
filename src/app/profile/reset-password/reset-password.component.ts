@@ -48,7 +48,9 @@ export class ResetPasswordComponent implements OnInit {
 
   setMemberDetails(memberId: string){
 
-    this.users.setMembership(memberId)
+    this.users.setMembership(memberId,true)
+
+    this.users.getMainUser().disableNav = true;
 
     const mailAccountsForm = this.eleRef.nativeElement.querySelector('.mailAccountsForm')
     mailAccountsForm.classList.remove('nosite')
@@ -136,11 +138,14 @@ export class ResetPasswordComponent implements OnInit {
 
       })
 
+      const footerPresent: any = false
+
       composeMailForm.append('address',this.mailService.mailAccount.hostLoginAddress)
       composeMailForm.append('mailFlagId',JSON.stringify(flagId))
       composeMailForm.append('accountType',this.mailService.mailAccount.accountType)
       composeMailForm.append('profileLink',this.members.getMainMember().memberId)
       composeMailForm.append('subdomain',this.department.getDepartment().departmentID)
+      composeMailForm.append('mailFooterPresent',footerPresent)
 
       this.appHttp.postHttp(composeMailForm,'/mails/getMailObject').then((mailObjectResp:any) =>{
 
