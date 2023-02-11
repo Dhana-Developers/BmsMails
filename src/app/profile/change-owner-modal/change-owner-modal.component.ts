@@ -52,7 +52,7 @@ export class ChangeOwnerModalComponent implements OnInit {
     searchOrgMembersForm.append('username',evt.target.value)
     searchOrgMembersForm.append('organizationDomain', this.userOrg.getOrganization().orgDomain)
 
-    this.appHttp.postHttp(searchOrgMembersForm,'/bmsBase/searchMembers').then((resp: Array<User>) =>{
+    this.appHttp.postHttp(searchOrgMembersForm,'/orgProfile/searchMembers').then((resp: Array<User>) =>{
 
       this.searched_Users=[]
 
@@ -105,7 +105,7 @@ export class ChangeOwnerModalComponent implements OnInit {
       changeOwnerForm.append('username',this.selectedUser.username)
       changeOwnerForm.append('OrgDomain',this.userOrg.getOrganization().orgDomain)
 
-      this.appHttp.postHttp(changeOwnerForm,'/bmsBase/changeOrgOwner').then((resp: any) =>{
+      this.appHttp.postHttp(changeOwnerForm,'/orgProfile/changeOrgOwner').then((resp: any) =>{
 
         loadingCtrl.dismiss()
         this.showAlert('Owner Changed')

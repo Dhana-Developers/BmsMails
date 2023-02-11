@@ -8,7 +8,7 @@ import { AppService } from 'src/app/app.service';
 export class HttpService {
 
   public hostName='127.0.0.1:8000';
-  public prodHostName = 'ict.dhanatechnology.com';
+  public prodHostName = 'bms.vincowoods.com';
 
   constructor(
 

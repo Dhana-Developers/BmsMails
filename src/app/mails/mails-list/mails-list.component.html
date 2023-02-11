@@ -69,8 +69,11 @@
         </ion-item-option>
       </ion-item-options>
 
-      <ion-item
+      <ion-item class="mailHeadItem"
       *ngIf="this.mailService.getMailFlag(mailHead.mailFlagId).flagName !== 'Draft'">
+        <ion-avatar slot="start" class="nosite">
+          <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+        </ion-avatar>
         <ion-label button
         (click)="this.readMail(this.mailService.chosenFlag.flagId,
         mailHead.mailObjectId,mailHead.mailServerId,mailHead.mailHeadId)">
@@ -88,20 +91,24 @@
           <h2>
             {{mailHead.mailSubject}}
           </h2>
+        </ion-label>
+        <ion-label *ngIf="this.subtractDate(this.mailHead.creationTime)<24; else monthView"
+        style="font-size: small;" slot="end" class="headTimeAndStatus">
           <ion-label color="{{this.mailService.getMailFlag(mailHead.mailFlagId).flaColor}}"
-          style="font-size: smaller;">
+           slot="top">
             {{this.mailService.getMailFlag(mailHead.mailFlagId).flagName}}
           </ion-label >
+            {{this.mailHead.creationTime?.getHours()}}:{{this.mailHead.creationTime?.getMinutes()}}
         </ion-label>
-        <p *ngIf="this.subtractDate(this.mailHead.creationTime)<24; else monthView"
-        style="font-size: small;">
-          {{this.mailHead.creationTime?.getHours()}} : {{this.mailHead.creationTime?.getMinutes()}}
-        </p>
         <ng-template #monthView>
-          <p
-          style="font-size: small;">
+          <ion-label
+          style="font-size: small;" slot="end">
+          <ion-label color="{{this.mailService.getMailFlag(mailHead.mailFlagId).flaColor}}"
+          style="font-size: smaller;" slot="top">
+            {{this.mailService.getMailFlag(mailHead.mailFlagId).flagName}}
+          </ion-label >
             {{this.getMonth(mailHead.creationTime?.getMonth())}} {{mailHead.creationTime?.getDate()}}
-          </p>
+          </ion-label>
         </ng-template>
       </ion-item>
 
@@ -122,15 +129,23 @@
             {{this.mailService.getMailFlag(mailHead.mailFlagId).flagName}}
           </ion-label >
         </ion-label>
-        <p *ngIf="this.subtractDate(this.mailHead.creationTime)<24; else monthView"
-        style="font-size: small;">
-          {{this.mailHead.creationTime?.getHours()}} : {{this.mailHead.creationTime?.getMinutes()}}
-        </p>
+        <ion-label *ngIf="this.subtractDate(this.mailHead.creationTime)<24; else monthView"
+        style="font-size: small;" slot="end">
+          <ion-label color="{{this.mailService.getMailFlag(mailHead.mailFlagId).flaColor}}"
+          style="font-size: smaller;" slot="top">
+            {{this.mailService.getMailFlag(mailHead.mailFlagId).flagName}}
+          </ion-label >
+            {{this.mailHead.creationTime?.getHours()}}:{{this.mailHead.creationTime?.getMinutes()}}
+        </ion-label>
         <ng-template #monthView>
-          <p
-          style="font-size: small;">
+          <ion-label
+          style="font-size: small;" slot="end">
+          <ion-label color="{{this.mailService.getMailFlag(mailHead.mailFlagId).flaColor}}"
+          style="font-size: smaller;" slot="top">
+            {{this.mailService.getMailFlag(mailHead.mailFlagId).flagName}}
+          </ion-label >
             {{this.getMonth(mailHead.creationTime?.getMonth())}} {{mailHead.creationTime?.getDate()}}
-          </p>
+          </ion-label>
         </ng-template>
       </ion-item>
 
