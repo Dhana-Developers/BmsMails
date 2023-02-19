@@ -93,7 +93,7 @@ export class SignUpComponent implements OnInit {
 
         loaderEle.dismiss()
 
-        this.showAlert('Sign Up','Error occured while signing you up, please try again.')
+        this.showAlert('Sign Up','Error occurred while signing you up, please try again.')
       })
 
     })
