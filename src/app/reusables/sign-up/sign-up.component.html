@@ -1,93 +1,229 @@
 
-<ion-list [inset]="true" class="ion-padding sifnUpForm">
-  <ion-list-header>
-
-    <h2>
-
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
       Sign Up
+    </ion-title>
+  </ion-toolbar>
+  <ion-progress-bar [value]="0.3" color="warning"></ion-progress-bar> <!--warning,primary,sucess,success 3,8,2-->
+</ion-header>
 
+<ion-list [inset]="true" class="ion-padding sifnUpForm authCredentials">
+
+  <ion-list-header>
+    <h2>
+      Auth Credentials
     </h2>
-
   </ion-list-header>
-  <form [formGroup]="ionicForm" novalidate>
-    <ion-item counter="true">
 
-      <ion-label position="floating">First name</ion-label>
-      <ion-input
-      formControlName="firstName"
-      type="text"
-      placeholder="First name"
-      maxlength="30"
-      class="firstName"
-      (ionChange)="this.createUsername()"></ion-input>
-    </ion-item>
-    <ion-item counter="true">
+  <form [formGroup]="signUpForm" (ngSubmit)="this.createUser()">
 
-      <ion-label position="floating">Last name</ion-label>
-      <ion-input
-      formControlName="lastName"
-      type="text"
-      placeholder="Last name"
-      maxlength="30"
-      class="lastName"
-      (ionChange)="this.createUsername()"></ion-input>
-
-    </ion-item>
-    <ion-item  class="userEmailItem">
-
-      <ion-label position="floating">Email</ion-label>
-      <ion-input
-      email
-      formControlName="userMail"
-      type="text"
-      placeholder="Email"
-      (ionChange)="this.checkEmail($event)"></ion-input>
-      <!-- <ion-note slot="helper" color="success">Will be used for verification before accessing your account</ion-note> -->
-      <ion-note slot="error">Invalid email</ion-note>
-
-    </ion-item>
-    <ion-item counter="true"
+    <ion-item
     class="usernameItem">
-
-      <ion-label position="floating">username</ion-label>
       <ion-input
       formControlName="username"
       type="text"
       placeholder="username"
       maxlength="150"
-      class="username"
-      (ionChange)="this.checkUserExists($event)"></ion-input>
-      <ion-note slot="helper" color="success">Should be unique</ion-note>
-      <ion-note slot="error">username exists</ion-note>
+      class="username"></ion-input>
+      <ion-note slot="error">
+        <ion-label *ngIf="errorControl['username'].errors?.['required']">
+          Required
+        </ion-label>
+        <ion-label *ngIf="errorControl['username'].errors?.['uniqueRequired']">
+          Should be unique
+        </ion-label>
+      </ion-note>
 
     </ion-item>
     <ion-item >
-
-      <ion-label position="floating">Password</ion-label>
       <ion-input
       formControlName="userPassword"
       type="password"
       placeholder="Password"
       class="userPasscode"></ion-input>
+      <ion-note slot="error">
+        <ion-label *ngIf="errorControl['userPassword'].errors?.['required']">
+          Required
+        </ion-label>
+        <ion-label *ngIf="errorControl['userPassword'].errors?.['requiresDigit']">
+          Should have a digit
+        </ion-label>
+        <ion-label *ngIf="errorControl['userPassword'].errors?.['requiresUppercase']">
+          Should have an uppercase later
+        </ion-label>
+        <ion-label *ngIf="errorControl['userPassword'].errors?.['requiresLowercase']">
+          Should have an lowercase later
+        </ion-label>
+        <ion-label *ngIf="errorControl['userPassword'].errors?.['requiresSpecialChars']">
+          Should have a special character
+        </ion-label>
+        <ion-label *ngIf="errorControl['userPassword'].errors?.['minlength']">
+          Should be atleast 8 chacter long
+        </ion-label>
+      </ion-note>
 
     </ion-item>
     <ion-item class="confPassItem">
-
-      <ion-label position="floating">Confirm password</ion-label>
       <ion-input
       formControlName="confPassword"
       type="password"
-      placeholder="Confirm password"
-      (ionChange)="this.confirmPassword($event)"></ion-input>
-      <ion-note slot="error">Password does note match</ion-note>
+      placeholder="Confirm password"></ion-input>
+      <ion-note slot="error">
+        <ion-label *ngIf="errorControl['confPassword'].errors?.['required']">
+          Required
+        </ion-label>
+        <ion-label *ngIf="errorControl['confPassword'].errors?.['minlength']">
+          Should be atleast 8 chacter long
+        </ion-label>
+        <ion-label>
+          Password should match
+        </ion-label>
+      </ion-note>
 
     </ion-item>
+
     <ion-item >
 
-      <ion-button class="authButs" disabled="true"
-      (click)="this.authenticate()">
+      <ion-button type="submit" [disabled]="!this.signUpForm.valid" color="warning"
+      class="credentialsBut">
 
         Sign Up
+
+      </ion-button>
+
+    </ion-item>
+
+  </form>
+
+</ion-list>
+
+
+<ion-list [inset]="true" class="ion-padding sifnUpForm authCredentials nosite">
+
+  <ion-list-header>
+    <h2>
+      Personal Information
+    </h2>
+  </ion-list-header>
+
+  <form [formGroup]="profileInfo">
+
+    <ion-item>
+      <ion-input
+      formControlName="firstName"
+      type="text"
+      placeholder="First name"
+      maxlength="30"
+      class="firstName"></ion-input>
+
+      <ion-note slot="error">
+        <ion-label *ngIf="errorProfileFormControl['firstName'].errors?.['required']">
+          Required
+        </ion-label>
+      </ion-note>
+
+    </ion-item>
+
+    <ion-item>
+      <ion-input
+      formControlName="lastName"
+      type="text"
+      placeholder="Last name"
+      maxlength="30"
+      class="lastName"></ion-input>
+
+      <ion-note slot="error">
+        <ion-label *ngIf="errorProfileFormControl['lastName'].errors?.['required']">
+          Required
+        </ion-label>
+      </ion-note>
+
+    </ion-item>
+
+    <ion-item>
+      <ion-input
+      email
+      formControlName="userMail"
+      type="text"
+      placeholder="Email"></ion-input>
+      <ion-note slot="helper" color="success">Will be used for verification before accessing your account</ion-note>
+      <ion-note slot="error">
+        <ion-label *ngIf="errorProfileFormControl['userMail'].errors?.['required']">
+          Required
+        </ion-label>
+        <ion-label *ngIf="errorProfileFormControl['userMail'].errors?.['email']">
+          Should be valid email
+        </ion-label>
+      </ion-note>
+
+    </ion-item>
+
+    <ion-item >
+
+      <ion-button [disabled]="!this.profileInfo.valid" color="primary"
+      class="credentialsBut">
+
+        Get Code
+
+      </ion-button>
+
+    </ion-item>
+
+  </form>
+</ion-list>
+
+<ion-list [inset]="true" class="ion-padding sifnUpForm authCredentials nosite">
+
+  <ion-list-header>
+    <h2>
+      Email verification
+    </h2>
+  </ion-list-header>
+  <ion-list-header>
+
+    <p>
+      The code is sent to your personal email. Use it to be verified.
+    </p>
+
+  </ion-list-header>
+
+  <form [formGroup]="mailVerificationForm">
+    <ion-item >
+      <ion-input
+      formControlName="validationCode"
+      type="text"
+      placeholder="Varification Code"
+      class="userPasscode"></ion-input>
+      <ion-note slot="error">
+        <ion-label *ngIf="errormailVerificationFormControl['validationCode'].errors?.['required']">
+          Required
+        </ion-label>
+        <ion-label *ngIf="errormailVerificationFormControl['validationCode'].errors?.['requiresDigit']">
+          Should have a digit
+        </ion-label>
+        <ion-label *ngIf="errormailVerificationFormControl['validationCode'].errors?.['requiresUppercase']">
+          Should have an uppercase later
+        </ion-label>
+        <ion-label *ngIf="errormailVerificationFormControl['validationCode'].errors?.['requiresLowercase']">
+          Should have an lowercase later
+        </ion-label>
+        <ion-label *ngIf="errormailVerificationFormControl['validationCode'].errors?.['requiresSpecialChars']">
+          Should have a special character
+        </ion-label>
+        <ion-label *ngIf="errormailVerificationFormControl['validationCode'].errors?.['minlength']">
+          Should be atleast 8 chacter long
+        </ion-label>
+      </ion-note>
+
+    </ion-item>
+
+    <ion-item >
+
+      <ion-button [disabled]="!this.mailVerificationForm.valid" color="success"
+      class="credentialsBut">
+
+        Verify Now
 
       </ion-button>
 

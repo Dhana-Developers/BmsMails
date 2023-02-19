@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class AppService {
 
-  public development = false;
+  public development = true;
 
   public loaderDivDisplay = 'nosite';
 
