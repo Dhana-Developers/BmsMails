@@ -74,7 +74,7 @@ export class DepartmentsComponent implements OnInit {
 
 
 
-  showAlert(msg: string, editAccount?: true): Promise<HTMLIonAlertElement>{
+  showAlert(msg: string, okCancel?: boolean): Promise<HTMLIonAlertElement>{
 
     let alertButtons: Array<any> = [
 
@@ -84,17 +84,17 @@ export class DepartmentsComponent implements OnInit {
       }
     ]
 
-    if (editAccount){
+    if (okCancel){
       alertButtons = [
 
         {
-          text:'Edit',
-          role:'edit'
+          text:'Cancel',
+          role:'cancel'
         },
 
         {
           text:'OK',
-          role:'cancel'
+          role:'continue'
         }
       ]
     }
@@ -195,10 +195,12 @@ export class DepartmentsComponent implements OnInit {
 
   departmentRecruitment(subdomain: string, evt: any){
 
+    const recruitmentStatus: boolean=!evt.target.checked
+
     const recruitmentForm: FormData = new FormData();
 
     recruitmentForm.append('subdomain',subdomain);
-    recruitmentForm.append('recruiting',evt.target.checked)
+    recruitmentForm.append('recruiting',JSON.stringify(recruitmentStatus))
 
     this.showLoader('Changing recruitment status').then((ionLoaderEle: HTMLIonLoadingElement) =>{
 
@@ -206,7 +208,7 @@ export class DepartmentsComponent implements OnInit {
 
         ionLoaderEle.dismiss();
 
-        this.showAlert('Recruitment status changed');
+        this.showAlert(`Recruitment status changed to ${recruitmentStatus}`);
 
       }).catch((err: any) =>{
 
@@ -221,17 +223,138 @@ export class DepartmentsComponent implements OnInit {
 
   }
 
-  createMailAccount(accountType: string){
+  createMailAccount(accountType: string, accountMode: string,hostLoginAddress?: string,edit?: boolean){
 
-    this.appMails.mailAccountType = accountType
+    this.appMails.mailAccount.accountType = accountType
+    this.appMails.mailAccountOpType = accountMode
+    this.appMails.mailAccountPassword = ''
 
-  this.mdlCtl.create({
-    component: MailsAccountComponent
-  }).then((createMailAccountComp: HTMLIonModalElement) =>{
+    if (accountMode === 'edit' && hostLoginAddress!== undefined){
 
-    createMailAccountComp.present()
+      this.showLoader('Getting account details').then((loaderEle: HTMLIonLoadingElement) =>{
 
-  })
+
+        this.getMailAccountDetails(accountType,hostLoginAddress).then((gottenAccount: MailAccount) =>{
+
+          loaderEle.dismiss()
+
+          if (edit!== undefined){
+            this.appMails.editingDisabled = !edit
+          }else{
+            this.appMails.editingDisabled = false
+          }
+
+          this.appMails.mailAccount = gottenAccount
+
+          this.mdlCtl.create({
+            component: MailsAccountComponent
+          }).then((createMailAccountComp: HTMLIonModalElement) =>{
+
+            createMailAccountComp.present()
+
+          })
+
+        }).catch((err: any) =>{
+
+          loaderEle.dismiss()
+          this.showAlert('Error occured please try again.')
+
+        })
+
+      })
+
+    }else{
+
+      this.mdlCtl.create({
+        component: MailsAccountComponent
+      }).then((createMailAccountComp: HTMLIonModalElement) =>{
+
+        createMailAccountComp.present()
+
+      })
+
+    }
+
+  }
+
+  removeMailAccount(accountId: number){
+
+    this.showAlert('Are you sure you want to delete the account, the process is irrevasable.',
+    true).then((alertEle: HTMLIonAlertElement) =>{
+
+      alertEle.onDidDismiss().then((overlayData: any) =>{
+
+        if (overlayData.role === 'continue'){
+
+          const removeAccountForm: FormData = new FormData()
+
+          removeAccountForm.append('id',JSON.stringify(accountId))
+
+          this.showLoader('Removing mail account').then((loaderEle: HTMLIonLoadingElement) =>{
+
+            this.appHttp.postHttp(removeAccountForm,'/mails/removeMailAccount').then(() =>{
+
+              loaderEle.dismiss()
+              this.showAlert('Account removed')
+
+              let accountIndex: number = 0
+
+              this.appDepartment.mailAccounts.forEach((mailAccount: MailAccount) =>{
+
+                if (mailAccount.id === accountId){
+
+                  this.appDepartment.mailAccounts.splice(accountIndex,1)
+
+                }
+
+                accountIndex+=1
+
+              })
+
+            }).catch((err: any) =>{
+              loaderEle.dismiss()
+              this.showAlert('Error occured, please try again.')
+            })
+
+          })
+
+        }
+
+      })
+
+    })
+
+  }
+
+  getMailAccountDetails(accountType: string, hostLoginAddress: string): Promise<MailAccount>{
+
+    return new Promise<MailAccount>((resolve, reject) => {
+
+      const getMailAccountDetailsForm: FormData = new FormData()
+      getMailAccountDetailsForm.append('accountType',accountType);
+      getMailAccountDetailsForm.append('profileLink',this.appMember.getMainMember().memberId)
+      getMailAccountDetailsForm.append('subdomain', this.appDepartment.getDepartment().departmentID)
+      getMailAccountDetailsForm.append('address',hostLoginAddress)
+
+      this.appHttp.postHttp(getMailAccountDetailsForm,'/mails/getMailAccount').then((resp: any) =>{
+
+        const mailAccount: MailAccount = {
+          id: resp.id,
+          hostLoginAddress: resp.address,
+          name: resp.name,
+          accountType: resp.accountType
+        }
+        this.appMails.mailAccountPassword = resp.password
+
+        resolve(mailAccount)
+
+      }).catch((err: any) =>{
+
+        reject(err)
+
+      })
+
+    })
 
   }
 
@@ -328,17 +451,7 @@ export class DepartmentsComponent implements OnInit {
 
           })
         }else{
-          this.showAlert('Wrong account credentials.',true).then((alertEle: HTMLIonAlertElement) =>{
-
-            alertEle.onDidDismiss().then((evtOverLay: any) =>{
-
-              if (evtOverLay.role ==='edit'){
-                this.createMailAccount('department')
-              }
-
-            })
-
-          })
+          this.showAlert('Wrong account credentials.')
         }
 
       }).catch((err: any) =>{

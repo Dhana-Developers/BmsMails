@@ -115,9 +115,9 @@ export class MailsAccountComponent implements OnInit {
     const domain: string = this.appOrg.getOrganization().orgDomain;
     const subdomain: string = this.appDep.getDepartment().departmentID;
     const profileLink: string = this.appMemb.getMainMember().memberId;
-    const accountType: string = this.appMails.mailAccountType;
+    const accountType: string = this.appMails.mailAccount.accountType;
 
-    if (accName !== '' && accAddress!== '' && accPass !== ''){
+    if (accName !== '' && accAddress!== '' && accPass !== '' && accServer!== undefined){
 
       const accountCreationForm: FormData = new FormData()
 
@@ -166,6 +166,57 @@ export class MailsAccountComponent implements OnInit {
     }else{
 
       this.showAlert('Account Creation','Please fill all required fields')
+
+    }
+
+  }
+
+  updateMailAccount(){
+
+    const accName: string = this.eleRef.nativeElement.querySelector('.accountNameIpt').value;
+    const accAddress: string = this.eleRef.nativeElement.querySelector('.accountAddressIpt').value;
+    const accPass: string = this.eleRef.nativeElement.querySelector('.accountPasswordIpt').value;
+    const accServer: string = this.eleRef.nativeElement.querySelector('.accountServer').value;
+    const domain: string = this.appOrg.getOrganization().orgDomain;
+    const subdomain: string = this.appDep.getDepartment().departmentID;
+    const profileLink: string = this.appMemb.getMainMember().memberId;
+    const accountType: string = this.appMails.mailAccount.accountType;
+
+    if (accName !== '' && accAddress!== '' && accPass !== '' && accServer!== undefined){
+
+      const accountCreationForm: FormData = new FormData()
+
+      accountCreationForm.append('name',accName)
+      accountCreationForm.append('address',accAddress)
+      accountCreationForm.append('password',accPass)
+      accountCreationForm.append('domain',domain)
+      accountCreationForm.append('subdomain',subdomain)
+      accountCreationForm.append('profileLink',profileLink)
+      accountCreationForm.append('accountType',accountType)
+      accountCreationForm.append('serverAddress',accServer)
+      accountCreationForm.append('id',JSON.stringify(this.appMails.mailAccount.id))
+
+      this.showLoader('Creating Account').then((loadingEle: HTMLIonLoadingElement) =>{
+
+        this.appHttp.postHttp(accountCreationForm,'/mails/updateMailAccount').then((accountCreationResp: any) =>{
+
+          loadingEle.dismiss()
+
+          this.showAlert('Account Updating','Account successfuly updated.')
+
+        }).catch((err: any) =>{
+
+          loadingEle.dismiss()
+          this.showAlert('Account Updating', 'Account updating failed, please try again.')
+          console.error(err);
+
+        })
+
+      })
+
+    }else{
+
+      this.showAlert('Account Updating','Please fill all required fields')
 
     }
 

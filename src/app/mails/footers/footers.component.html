@@ -92,13 +92,13 @@
       </ion-label>
     </ion-item>
 
-  <ion-item-sliding button *ngFor="let mailFooter of this.mailService.mailFooters"
-  (click)="this.getMailFooter(mailFooter.id)">
-    <ion-item>
+  <ion-item-sliding *ngFor="let mailFooter of this.mailService.mailFooters">
+    <ion-item  button
+    (click)="this.getMailFooter(mailFooter.id)">
       <ion-label>{{mailFooter.name}}</ion-label>
     </ion-item>
     <ion-item-options side="end">
-      <ion-item-option color="danger">Delete</ion-item-option>
+      <ion-item-option color="danger" (click)="this.removeFooter(mailFooter.id)">Delete</ion-item-option>
     </ion-item-options>
   </ion-item-sliding>
 
