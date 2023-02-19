@@ -42,7 +42,7 @@
 
       </ion-item>
       <ion-item *ngIf="this.appOrganization.getOrganization().orgCreator ===  this.appUser.getMainUser().username">
-          <ion-checkbox [checked]="this.appDepartment.getDepartment().recruiting" (click)="this.departmentRecruitment(this.appDepartment.getDepartment().departmentID,
+          <ion-checkbox checked="{{this.appDepartment.getDepartment().recruiting}}" (ionChange)="this.departmentRecruitment(this.appDepartment.getDepartment().departmentID,
           $event)" slot="start"></ion-checkbox>
           <ion-label>
             Recruiting
@@ -53,45 +53,34 @@
     <ion-list [inset]="true" class="ion-padding departmentCreationForm">
       <ion-list-header>
         <h2>
-          Mail Accounts
+          Resources
         </h2>
       </ion-list-header>
-
       <ion-item>
         <ion-label>
-          <ion-button fill="clear" color="primary" class="resourceLinkBtn"
-          (click)="this.createMailAccount('department','create')">
-            <ion-icon slot="start" name="add"></ion-icon>
-            Add Mail Account
-          </ion-button>
+          <p>
+            Mails
+          </p>
+          <ion-label>
+            <ion-button fill="clear" color="primary" class="resourceLinkBtn"
+            (click)="this.createMailAccount('department')">
+              <ion-icon slot="start" name="add"></ion-icon>
+              Add Mail Account
+            </ion-button>
+          </ion-label>
+
+          <ion-item button *ngFor="let appMailAccount of this.appDepartment.mailAccounts"
+          (click)="this.getMailLebels('department',appMailAccount.hostLoginAddress)">
+            <ion-label>
+              <p>
+                {{appMailAccount.hostLoginAddress}}
+              </p>
+              {{appMailAccount.name}}
+            </ion-label>
+          </ion-item>
         </ion-label>
       </ion-item>
-
-      <ion-item-sliding  *ngFor="let appMailAccount of this.appDepartment.mailAccounts">
-        <ion-item-options side="start"
-        (click)="this.createMailAccount('department','edit',appMailAccount.hostLoginAddress,false)">
-          <ion-item-option color="primary">View</ion-item-option>
-        </ion-item-options>
-
-        <ion-item button
-        (click)="this.getMailLebels(appMailAccount.accountType,appMailAccount.hostLoginAddress)">
-          <ion-label>
-            <p>
-              {{appMailAccount.hostLoginAddress}}
-            </p>
-            {{appMailAccount.name}}
-          </ion-label>
-        </ion-item>
-
-        <ion-item-options side="end">
-          <ion-item-option color="warning"
-          (click)="this.createMailAccount('department','edit',appMailAccount.hostLoginAddress)">Edit</ion-item-option>
-          <ion-item-option color="danger" (click)="this.removeMailAccount(appMailAccount.id)">Delete</ion-item-option>
-        </ion-item-options>
-      </ion-item-sliding>
-
     </ion-list>
-
 
     <ion-list [inset]="true" class="ion-padding departmentCreationForm">
       <ion-list-header>

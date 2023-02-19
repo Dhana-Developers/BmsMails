@@ -43,16 +43,11 @@ export class MailsService {
   public footerMediaClass = 'nosite'
 
   public mailAccount: MailAccount = {
-    id:0,
     hostLoginAddress: '',
     disableMail: true,
     name: '',
-    accountType: ''//member, department, organization
+    accountType: ''
   };
-
-  public mailAccountOpType: string = 'create'//edit, view, create
-  public mailAccountPassword: string = ''
-  public editingDisabled: boolean = false
 
   public mdMailFlags: any = {
     'Unread':{iconName:'mail-unread-outline',iconColor:'unread-mails'},
@@ -100,7 +95,7 @@ export class MailsService {
     flagImapName: '',
     flaColor: ''
   }
-  // public mailAccountType: string = 'member';
+  public mailAccountType: string = 'member';//member, department, organization
 
   constructor(
     private appHttp: HttpService,

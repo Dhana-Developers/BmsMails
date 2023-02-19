@@ -1,12 +1,5 @@
 import { Injectable } from '@angular/core';
 
-
-import { HttpErrorResponse } from '@angular/common/http';
-import { HttpClient } from  '@angular/common/http';
-import { HttpHeaders } from '@angular/common/http';
-
-import { catchError, Observable, retry, throwError } from 'rxjs';
-
 import { AppService } from 'src/app/app.service';
 import { HttpService } from '../comms/http/http.service';
 import { MembersService } from '../members/members.service';
@@ -18,13 +11,6 @@ import { MailsService } from '../mails/mails.service';
   providedIn: 'root'
 })
 export class UserService {
-
-  private appUser: AppUser = {
-    username: '',
-    firstName: '',
-    lastName: '',
-    emailAddress: ''
-  }
 
   private mainUser: User = {
     username: '',
@@ -45,8 +31,7 @@ export class UserService {
     private appMember: MembersService,
     private appDept: DepartmentsService,
     private appOrg: OrganizationService,
-    private appMails: MailsService,
-    private appHttp$: HttpClient
+    private appMails: MailsService
   ) { }
 
   getMainUser(): User{
@@ -150,13 +135,12 @@ export class UserService {
           departmentMembers: organizationDepartment.departmentMembers,
           state: 0,
           mailAccount: '',
-          recruiting: organizationDepartment.recruitment
+          recruiting: organizationDepartment.recruitment,
         }
 
         organizationDepartment.mailAccounts.forEach((mailAccount: any) => {
 
           const appMailAccount: MailAccount={
-            id: mailAccount.id,
             hostLoginAddress: mailAccount.address,
             name: mailAccount.name,
             accountType: mailAccount.accountType
@@ -185,7 +169,6 @@ export class UserService {
       membsershipDetails.mailAccount.forEach((mailAccount: any) => {
 
         const appMailAccount: MailAccount = {
-          id: mailAccount.id,
           hostLoginAddress: mailAccount.address,
           name: mailAccount.name,
           accountType: mailAccount.accountType
@@ -198,7 +181,6 @@ export class UserService {
       membsershipDetails.departmentMailAccounts.forEach((mailAccount: any) => {
 
         const appMailAccount: MailAccount={
-          id: mailAccount.id,
           hostLoginAddress: mailAccount.address,
           name: mailAccount.name,
           accountType: mailAccount.accountType
@@ -224,237 +206,5 @@ export class UserService {
     });
 
   }
-
-
-
-  private handleError(error: HttpErrorResponse) {
-    if (error.status === 0) {
-      console.error('An error occurred:', error.error);
-    } else {
-      console.error(
-        `Backend returned code ${error.status}, body was: `, error.error);
-    }
-    return throwError(() => new Error('Something bad happened; please try again later.'));
-  }
-
-  createUser(userToCreate: AppUser,password: string,endUrl:string,headers?:HttpHeaders): Observable<boolean>{
-
-    const resourceLink: string = this.appHttp.getBaseLink()+endUrl;
-
-
-    const createUserForm: FormData = new FormData()
-    createUserForm.append('username',userToCreate.username)
-    createUserForm.append('password',password)
-
-
-    if( headers !== undefined){
-      return this.appHttp$.post<boolean>(resourceLink,createUserForm,{headers,observe:'body'}).pipe(
-        retry(3),
-        catchError(this.handleError)
-      );
-    }else{
-      return this.appHttp$.post<boolean>(resourceLink,createUserForm,{observe:'body'}).pipe(
-        retry(3),
-        catchError(this.handleError)
-      );
-    }
-
-  }
-
-  getUser(username: string, endUrl: string, headers?: HttpHeaders): Observable<User>{
-
-    const resourceLink: string = this.appHttp.getBaseLink()+endUrl;
-
-    const getUserForm: FormData = new FormData()
-    getUserForm.append('username',username)
-
-    if( headers !== undefined){
-      return this.appHttp$.post<User>(resourceLink,getUserForm,{headers,observe:'body'}).pipe(
-        retry(3),
-        catchError(this.handleError)
-      );
-    }else{
-      return this.appHttp$.post<User>(resourceLink,getUserForm,{observe:'body'}).pipe(
-        retry(3),
-        catchError(this.handleError)
-      );
-    }
-
-  }
-
-  updateUser(userToUpdate: AppUser, endUrl: string, headers?: HttpHeaders): Observable<boolean>{
-
-    const resourceLink: string = this.appHttp.getBaseLink()+endUrl;
-
-    const updateUserForm: FormData = new FormData()
-    updateUserForm.append('username',userToUpdate.username)
-    updateUserForm.append('firstName',userToUpdate.username)
-    updateUserForm.append('lastName',userToUpdate.username)
-    updateUserForm.append('emailAddress',userToUpdate.username)
-
-    if( headers !== undefined){
-      return this.appHttp$.post<boolean>(resourceLink,updateUserForm,{headers,observe:'body'}).pipe(
-        retry(3),
-        catchError(this.handleError)
-      );
-    }else{
-      return this.appHttp$.post<boolean>(resourceLink,updateUserForm,{observe:'body'}).pipe(
-        retry(3),
-        catchError(this.handleError)
-      );
-    }
-
-  }
-
-  removeUser(userToRemove: AppUser, endUrl: string, headers?: HttpHeaders): Observable<boolean>{
-
-    const resourceLink: string = this.appHttp.getBaseLink()+endUrl;
-
-    const updateUserForm: FormData = new FormData()
-    updateUserForm.append('username',userToRemove.username)
-
-    if( headers !== undefined){
-      return this.appHttp$.post<boolean>(resourceLink,updateUserForm,{headers,observe:'body'}).pipe(
-        retry(3),
-        catchError(this.handleError)
-      );
-    }else{
-      return this.appHttp$.post<boolean>(resourceLink,updateUserForm,{observe:'body'}).pipe(
-        retry(3),
-        catchError(this.handleError)
-      );
-    }
-
-  }
-
-  setSuperUser(supserUser: AppUser, endUrl: string, headers?: HttpHeaders): Observable<boolean>{
-
-    const resourceLink: string = this.appHttp.getBaseLink()+endUrl;
-
-    const setSuperUserForm: FormData = new FormData()
-    setSuperUserForm.append('username',supserUser.username)
-
-    if( headers !== undefined){
-      return this.appHttp$.post<boolean>(resourceLink,setSuperUserForm,{headers,observe:'body'}).pipe(
-        retry(3),
-        catchError(this.handleError)
-      );
-    }else{
-      return this.appHttp$.post<boolean>(resourceLink,setSuperUserForm,{observe:'body'}).pipe(
-        retry(3),
-        catchError(this.handleError)
-      );
-    }
-
-  }
-
-
-  removeSuperUser(supserUser: AppUser, endUrl: string, headers?: HttpHeaders): Observable<boolean>{
-
-    const resourceLink: string = this.appHttp.getBaseLink()+endUrl;
-
-    const setSuperUserForm: FormData = new FormData()
-    setSuperUserForm.append('username',supserUser.username)
-
-    if( headers !== undefined){
-      return this.appHttp$.post<boolean>(resourceLink,setSuperUserForm,{headers,observe:'body'}).pipe(
-        retry(3),
-        catchError(this.handleError)
-      );
-    }else{
-      return this.appHttp$.post<boolean>(resourceLink,setSuperUserForm,{observe:'body'}).pipe(
-        retry(3),
-        catchError(this.handleError)
-      );
-    }
-
-  }
-
-
-  setStaffUser(staffUser: AppUser, endUrl: string, headers?: HttpHeaders): Observable<boolean>{
-
-    const resourceLink: string = this.appHttp.getBaseLink()+endUrl;
-
-    const setStaffUserForm: FormData = new FormData()
-    setStaffUserForm.append('username',staffUser.username)
-
-    if( headers !== undefined){
-      return this.appHttp$.post<boolean>(resourceLink,setStaffUserForm,{headers,observe:'body'}).pipe(
-        retry(3),
-        catchError(this.handleError)
-      );
-    }else{
-      return this.appHttp$.post<boolean>(resourceLink,setStaffUserForm,{observe:'body'}).pipe(
-        retry(3),
-        catchError(this.handleError)
-      );
-    }
-
-  }
-
-  romoveStaffUser(staffUser: AppUser, endUrl: string, headers?: HttpHeaders): Observable<boolean>{
-
-    const resourceLink: string = this.appHttp.getBaseLink()+endUrl;
-
-    const romoveStaffUserForm: FormData = new FormData()
-    romoveStaffUserForm.append('username',staffUser.username)
-
-    if( headers !== undefined){
-      return this.appHttp$.post<boolean>(resourceLink,romoveStaffUserForm,{headers,observe:'body'}).pipe(
-        retry(3),
-        catchError(this.handleError)
-      );
-    }else{
-      return this.appHttp$.post<boolean>(resourceLink,romoveStaffUserForm,{observe:'body'}).pipe(
-        retry(3),
-        catchError(this.handleError)
-      );
-    }
-
-  }
-
-  activateUser(inactiveUser: AppUser, endUrl: string, headers?: HttpHeaders): Observable<boolean>{
-
-    const resourceLink: string = this.appHttp.getBaseLink()+endUrl;
-
-    const activateUserForm: FormData = new FormData()
-    activateUserForm.append('username',inactiveUser.username)
-
-    if( headers !== undefined){
-      return this.appHttp$.post<boolean>(resourceLink,activateUserForm,{headers,observe:'body'}).pipe(
-        retry(3),
-        catchError(this.handleError)
-      );
-    }else{
-      return this.appHttp$.post<boolean>(resourceLink,activateUserForm,{observe:'body'}).pipe(
-        retry(3),
-        catchError(this.handleError)
-      );
-    }
-
-  }
-
-
-  deactivateUser(activeUser: AppUser, endUrl: string, headers?: HttpHeaders): Observable<boolean>{
-
-    const resourceLink: string = this.appHttp.getBaseLink()+endUrl;
-
-    const activateUserForm: FormData = new FormData()
-    activateUserForm.append('username',activeUser.username)
-
-    if( headers !== undefined){
-      return this.appHttp$.post<boolean>(resourceLink,activateUserForm,{headers,observe:'body'}).pipe(
-        retry(3),
-        catchError(this.handleError)
-      );
-    }else{
-      return this.appHttp$.post<boolean>(resourceLink,activateUserForm,{observe:'body'}).pipe(
-        retry(3),
-        catchError(this.handleError)
-      );
-    }
-
-  }
-
 
 }

@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Create {{this.appMails.mailAccount.accountType}} mail account</ion-title>
+    <ion-title>Create Mail Account</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="cancel()">Close</ion-button>
     </ion-buttons>
@@ -13,77 +13,39 @@
 
     <ion-card-content>
 
-      <ion-item *ngIf="this.appMails.mailAccountOpType === 'create'">
-        <ion-label position="floating" color="primary">
+      <ion-item>
+        <ion-label position="floating">
           Account Name
         </ion-label>
         <ion-input type="text" class="accountNameIpt" placeholder="John Doe"
-        value="{{this.appUser.getMainUser().firstName}} {{this.appUser.getMainUser().lastName}} Mails"
-        *ngIf="this.appMails.mailAccount.accountType === 'member'; else departmentInput"></ion-input>
-
-        <ng-template #departmentInput>
-          <ion-input type="text" class="accountNameIpt" placeholder="Ict Department Mails"
-          value="{{this.appDep.getDepartment().departmentName}} Mails"></ion-input>
-        </ng-template>
+        value="{{this.appUser.getMainUser().firstName}} {{this.appUser.getMainUser().lastName}}"></ion-input>
       </ion-item>
 
-      <ion-item *ngIf="this.appMails.mailAccountOpType === 'edit'">
-        <ion-label position="floating" color="primary">
-          Account Name
-        </ion-label>
-        <ion-input type="text" class="accountNameIpt" placeholder="John Doe"
-        [value]="this.appMails.mailAccount.name" [disabled]="this.appMails.editingDisabled"
-        ></ion-input>
-      </ion-item>
-
-      <ion-item  *ngIf="this.appMails.mailAccountOpType === 'create'">
-        <ion-label position="floating"  color="primary">
+      <ion-item>
+        <ion-label position="floating">
           Account Address
         </ion-label>
         <ion-input type="text" class="accountAddressIpt" placeholder="johndoe@testmail.com"></ion-input>
       </ion-item>
 
-      <ion-item  *ngIf="this.appMails.mailAccountOpType === 'edit'">
-        <ion-label position="floating"  color="primary">
-          Account Address
-        </ion-label>
-        <ion-input type="text" class="accountAddressIpt" placeholder="johndoe@testmail.com"
-        [value]="this.appMails.mailAccount.hostLoginAddress"  [disabled]="this.appMails.editingDisabled"></ion-input>
-      </ion-item>
-
-      <ion-item  *ngIf="this.appMails.mailAccountOpType === 'create'">
-        <ion-label position="floating"  color="primary">
+      <ion-item>
+        <ion-label position="floating">
           Account Password
         </ion-label>
         <ion-input type="password" class="accountPasswordIpt"></ion-input>
       </ion-item>
 
-      <ion-item  *ngIf="this.appMails.mailAccountOpType === 'edit'">
-        <ion-label position="floating"  color="primary" >
-          Account Password
-        </ion-label>
-        <ion-input type="text" class="accountPasswordIpt"
-        [value]="this.appMails.mailAccountPassword"  [disabled]="this.appMails.editingDisabled"></ion-input>
-      </ion-item>
-
       <ion-list>
         <ion-item>
-          <ion-select placeholder="Select Server" class="accountServer" color="primary">
+          <ion-select placeholder="Select Server" class="accountServer">
             <ion-select-option *ngFor="let mailServer of this.appMails.mailServers" value="{{mailServer.address}}">{{mailServer.name}}</ion-select-option>
           </ion-select>
         </ion-item>
       </ion-list>
 
       <ion-button fill="clear" color="success" class="creatAccountBut creatprivateAccountBut"
-      (click)="this.createMailAccount()"  *ngIf="this.appMails.mailAccountOpType === 'create'">
+      (click)="this.createMailAccount()">
         Create
-      </ion-button>
-
-
-      <ion-button fill="clear" color="warning" class="creatAccountBut creatprivateAccountBut"
-      (click)="this.updateMailAccount()"
-       *ngIf="this.appMails.mailAccountOpType === 'edit'"  [disabled]="this.appMails.editingDisabled">
-        Change
       </ion-button>
 
     </ion-card-content>

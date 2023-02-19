@@ -175,60 +175,6 @@ export class FootersComponent implements OnInit {
 
   }
 
-  removeFooter(footerId: number){
-
-    this.showAlert('Remove Footer','Are you sure the process is irreversable!',true).then(
-      (alertEle: HTMLIonAlertElement) =>{
-
-        alertEle.onDidDismiss().then((overlayEvt: any) =>{
-
-          if (overlayEvt.role === 'continue'){
-
-            this.showLoader('Removing Footer').then((loadingEle: HTMLIonLoadingElement) =>{
-
-              const removeFooterForm: FormData = new FormData()
-
-              removeFooterForm.append('id',JSON.stringify(footerId))
-
-              this.appHttp.postHttp(removeFooterForm,'/mails/removeFooter').then(() =>{
-
-                loadingEle.dismiss()
-
-                this.showAlert('Remove Footer','Footer Removed.')
-
-                let footerIndex: number = 0
-
-                this.mailService.mailFooters.forEach((mailFooter: any) =>{
-
-                  if (mailFooter.id = footerId){
-
-                    this.mailService.mailFooters.splice(footerIndex,1)
-
-                  }
-
-                  footerIndex+=1
-
-                })
-
-              }).catch((err: any) =>{
-
-                console.error(err);
-
-                loadingEle.dismiss()
-                this.showAlert('Remove Footer','Error occured please try again.')
-
-              })
-
-            })
-
-          }
-
-        })
-
-      })
-
-  }
-
 
   showLoader(message:string): Promise<HTMLIonLoadingElement>{
 
@@ -247,41 +193,21 @@ export class FootersComponent implements OnInit {
 
   }
 
-  showAlert(alertTitle:string, alertMsg: string, continueBut?: boolean): Promise<HTMLIonAlertElement>{
-
-    let alertButs: Array<any>=[
-
-      {
-        text:'Ok',
-        role:'Cancel'
-      }
-
-    ]
-
-    if (continueBut){
-      alertButs=[
-
-        {
-          text:'Cancel',
-          role:'cancel'
-        },
-
-        {
-          text:'Ok',
-          role:'continue'
-        }
-  
-      ]
-    }
-
-
+  showAlert(alertTitle:string, alertMsg: string): Promise<HTMLIonAlertElement>{
 
     return new Promise<HTMLIonAlertElement>((resolve, reject) => {
 
       this.alertCtrl.create({
         header:alertTitle,
         message: alertMsg,
-        buttons:alertButs
+        buttons:[
+
+          {
+            text:'Ok',
+            role:'Cancel'
+          }
+
+        ]
       }).then((alertEle: HTMLIonAlertElement) =>{
 
         alertEle.present()

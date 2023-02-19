@@ -160,13 +160,11 @@ export class OrganizationsComponent implements OnInit {
         departmentOrganization: this.orgService.getOrganization().orgDomain,
         departmentMembers: resp.departmentMembers,
         state: 0,
-        mailAccount: '',
-        recruiting: resp.recruitmentStatus
+        mailAccount: ''
       }
       this.orgDept.mailAccounts=[]
       resp.departmentMails.forEach((departmentMail: any) => {
         const appMailAccount: MailAccount={
-          id: departmentMail.id,
           hostLoginAddress: departmentMail.address,
           name: departmentMail.name,
           accountType: departmentMail.accountType

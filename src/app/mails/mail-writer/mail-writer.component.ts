@@ -301,12 +301,11 @@ export class MailWriterComponent implements OnInit,AfterViewInit {
 
               })
               this.appStorage.set('drafts',systemDrafts)
+              loaderCtrl.dismiss()
               this.showAlert('Mail Sent')
 
             })
 
-          }else{
-            this.showAlert('Mail Not Sent')
           }
 
         }).catch((err: any) =>{
