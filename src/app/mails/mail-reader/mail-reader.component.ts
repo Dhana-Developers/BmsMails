@@ -66,6 +66,14 @@ export class MailReaderComponent implements OnInit, AfterContentChecked {
         mailContent.innerText = this.appMails.mailBody.mailBodyPayload
       }
 
+      const mailReader: any = this.eleRef.nativeElement.querySelector('.mailReader')
+
+      this.appMails.mailBody.mailBodyParay.forEach((mailPara: any) =>{
+
+        mailReader.appendChild(mailPara)
+
+      })
+
   }
   createAttachmentModal(): void{
 

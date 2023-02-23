@@ -95,4 +95,30 @@ export class MailsAttachmentModalComponent implements OnInit {
 
   }
 
+  get_att_media(mailAttMediaURL: any,filename: string){
+
+    this.appHttp.getHttp(`/mails${mailAttMediaURL.pathname}`,'file').then((resp: any) =>{
+
+      const attFile = new FileReader()
+
+      attFile.onloadend=()=>{
+
+        const downloadBut: any = document.createElement('a')
+        downloadBut.download = filename
+        downloadBut.href = attFile.result
+
+        downloadBut.click()
+
+      }
+
+      attFile.readAsDataURL(resp)
+
+    }).catch((err: any) =>{
+
+      console.log(err);
+
+    })
+
+  }
+
 }

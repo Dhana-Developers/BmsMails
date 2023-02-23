@@ -137,6 +137,12 @@ export class MailsListComponent implements OnInit {
           mailBodyType:resp.bodyType
         }
 
+        // new feature
+
+        mailBody.mailBodyParay=this.processHtml(resp.mail_body)
+
+        // end here
+
         const mailContacts: Array<Contact>=[]
         resp.mailContacts.forEach((serverContact: any) => {
           mailContacts.push({
@@ -508,29 +514,41 @@ export class MailsListComponent implements OnInit {
 
     }
 
-    const initChildrenList: Array<Element>=this.getChildren(initArray,0)
+    const initChildrenList: Array<Element>=this.getChildren(initArray)
 
-    const widthLimitedElements: Array<Element> = this.limitWidth(initChildrenList)
-
-    return widthLimitedElements
+    return [initChildrenList[0]]
 
   }
 
-  getChildren(initChildrenList: Array<Element>, last_mail:number):Array<Element>{
+  getChildren(initChildrenList: Array<Element>):Array<Element>{
 
-    for (let index = last_mail; index < initChildrenList.length; index++) {
+    const parentChildStore: any = {}
+
+    for (let index = 0; index < initChildrenList.length; index++) {
       const initChild = initChildrenList[index];
 
       if (initChild.children!== undefined){
+        parentChildStore[index]=initChild.children
 
-        for (let index = 0; index < initChild.children.length; index++) {
-          const element = initChild.children[index];
-          initChildrenList.push(element)
+        for (let childIndex = 0; childIndex < parentChildStore[index].length; childIndex++) {
+          const childElement = parentChildStore[index][childIndex];
+
+          if (childElement.width!==undefined && childElement.width!==''){
+
+            if (Number(childElement.width)>window.innerWidth){
+              childElement.width = 95+'%';
+            }
+          }
+
+          initChildrenList.push(childElement)
+
         }
 
       }
 
     }
+
+    console.log(parentChildStore);
 
     return initChildrenList
 

@@ -16,7 +16,7 @@ export class HttpService {
 
   ) { }
 
-  getHttp(path: string,headers?: any): Promise<any>{
+  getHttp(path: string,requestType?: string,headers?: any): Promise<any>{
 
     return new Promise<any>((resolve, reject) => {
 
@@ -32,11 +32,15 @@ export class HttpService {
 
       }
 
-      this.baseHttp(new FormData(),'GET',baseLink+path,headers).then((httpResp: BmsResponse)=>{
+      this.baseHttp(new FormData(),'GET',baseLink+path,requestType,headers).then((httpResp: BmsResponse)=>{
 
-        const responseData: any=httpResp.backendResponse;
+        if (requestType === 'file'){
+          resolve(httpResp);
+        }else{
+          const responseData: any=httpResp.backendResponse;
 
-        resolve(responseData);
+          resolve(responseData);
+        }
 
       }).catch((err: any)=>{
 
@@ -49,7 +53,7 @@ export class HttpService {
   }
 
   postHttp(requestBody: FormData,path: string,
-    headers?: any): Promise<any>{
+    headers?: any, requestType?:string): Promise<any>{
 
     return new Promise<any>((resolve, reject) => {
 
@@ -65,7 +69,7 @@ export class HttpService {
 
       }
 
-      this.baseHttp(requestBody,'POST',baseLink+path,headers).then((httpResp: BmsResponse)=>{
+      this.baseHttp(requestBody,'POST',baseLink+path,requestType,headers).then((httpResp: BmsResponse)=>{
 
         const responseData: any=httpResp.backendResponse;
         resolve(responseData);
@@ -99,7 +103,7 @@ export class HttpService {
   }
 
   private baseHttp(msgBody: FormData,method: string,path: string,
-    headers?: any): Promise<BmsResponse>{
+    requestType?: string,headers?: any): Promise<BmsResponse>{
     return new Promise<BmsResponse>((resolve,reject)=>{
 
       this.appService.loaderDivDisplay='site';
@@ -125,7 +129,11 @@ export class HttpService {
 
           this.appService.loaderDivDisplay='nosite';
 
-          resolve(JSON.parse(httpXhr.response));
+          if (requestType!=='file'){
+            resolve(JSON.parse(httpXhr.response));
+          }else{
+            resolve(httpXhr.response);
+          }
 
         }
 
@@ -133,13 +141,16 @@ export class HttpService {
 
           this.appService.loaderDivDisplay='nosite';
 
-          console.log(evt);
+          console.error(evt);
 
           reject([httpXhr.status,evt]);
 
         };
 
       };
+      if (requestType==='file'){
+        httpXhr.responseType = 'blob'
+      }
       httpXhr.send(msgBody);
     });
   }

@@ -42,12 +42,11 @@
           (click)="this.removeAtt(mailAtt.attId)">
             Remove
           </ion-button>
-          <a href="{{mailAtt.attLink}}" download
-          *ngIf="this.appMails.mailSection==='Reader'">
-            <ion-button fill="clear" color="success" class="attsButs">
-              Download
-            </ion-button>
-          </a>
+          <ion-button fill="clear" color="success" class="attsButs"
+          *ngIf="this.appMails.mailSection==='Reader'"
+          (click)="this.get_att_media(mailAtt.attLink,mailAtt.attName)">
+            Download
+          </ion-button>
         </ion-card-subtitle>
       </ion-card-header>
       <ion-card-content>
