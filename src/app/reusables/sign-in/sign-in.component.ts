@@ -6,6 +6,7 @@ import { AlertController } from '@ionic/angular';
 
 import { UserService } from 'src/app/base-services/user/user.service';
 import { HttpService } from 'src/app/base-services/comms/http/http.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-sign-in',
@@ -23,7 +24,8 @@ export class SignInComponent implements OnInit {
     private appRouter: Router,
     private loadingController: LoadingController,
     private alertCtrl: AlertController,
-    private appHttp: HttpService
+    private appHttp: HttpService,
+    private http: HttpClient
   ) { }
 
   ngOnInit() {}
@@ -65,7 +67,7 @@ export class SignInComponent implements OnInit {
         signInForm.append('username',this.username);
         signInForm.append('password',this.password);
 
-        this.appHttp.postHttp(signInForm,'/orgProfile/signIn').then((authResp: any) =>{
+        this.http.post('https://bms.vincowoods.com/orgProfile/signIn', signInForm).subscribe((authResp: any) =>{
 
           loaderEle.dismiss();
 
@@ -106,10 +108,11 @@ export class SignInComponent implements OnInit {
             this.showAlert('Sign In','Wrong credentials.')
           }
 
-        }).catch((err: any) =>{
+        }),
+        ((error: any) =>{
           loaderEle.dismiss();
           this.showAlert('Sign In','Connection problem, please try again.')
-          console.error(err);
+          console.error(error);
 
         })
 
