@@ -150,6 +150,8 @@ export class HttpService {
       };
       if (requestType==='file'){
         httpXhr.responseType = 'blob'
+      }else{
+        httpXhr.responseType= 'text'
       }
       httpXhr.send(msgBody);
     });

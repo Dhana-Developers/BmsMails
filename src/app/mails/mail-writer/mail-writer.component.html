@@ -146,7 +146,11 @@
               *ngIf="this.mailService.chosenFooter.footerMedia!==null">
                 <div class="vWMFDImgHolder">
                     <img src="{{this.appHttp.getBaseLink()}}{{this.mailService.chosenFooter.footerMedia.value}}" class="vWMFDImgTag"
-                    style="width: 110px;">
+                    style="width: 110px;"><br>
+                    <div *ngIf="this.mailService.chosenFooter.footerMedia.label!==''" style="width: 100%;
+                    display:flex;justify-content:center;align-items:center; color:blue">
+                      {{this.mailService.chosenFooter.footerMedia.label}}
+                    </div>
                 </div>
               </td>
 

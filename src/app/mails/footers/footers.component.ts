@@ -18,6 +18,7 @@ export class FootersComponent implements OnInit {
   public footerSalutation='';
   public footerMedia = '';
   public footerRecords: Array<string> = [];
+  public imgFooterLabel: string = ''
 
   constructor(
     private modalCtrl: ModalController,
@@ -106,6 +107,7 @@ export class FootersComponent implements OnInit {
       textRecordForm.append('footerId',JSON.stringify(this.mailService.mailFooterId))
       textRecordForm.append('recordType','text')
       textRecordForm.append('recordValue',footerRecordIpt)
+      textRecordForm.append('recordLabel','')
 
       this.showLoader('Adding Record').then((loadingEle: HTMLIonLoadingElement) =>{
 
@@ -138,39 +140,42 @@ export class FootersComponent implements OnInit {
     const attFile: File = evt.target.files[0];
 
     const addAttForm: FormData= new FormData()
-
     addAttForm.append('footerMedia',attFile)
     addAttForm.append('fileName',attFile.name)
     addAttForm.append('footerId',JSON.stringify(this.mailService.mailFooterId))
     addAttForm.append('recordType','file')
 
-    this.showLoader('Adding Record').then((loadingEle: HTMLIonLoadingElement) =>{
+    this.addRecordLabelForm().then(()=>{
+      addAttForm.append('recordLabel',this.imgFooterLabel)
 
-      this.appHttp.postHttp(addAttForm,'/mails/addFooterRecord').then((footerRecordResp: any) =>{
+      this.showLoader('Adding Record').then((loadingEle: HTMLIonLoadingElement) =>{
 
-        loadingEle.dismiss()
+        this.appHttp.postHttp(addAttForm,'/mails/addFooterRecord').then((footerRecordResp: any) =>{
 
-        if (footerRecordResp.status === 1){
+          loadingEle.dismiss()
 
-          this.footerMedia = this.appHttp.getBaseLink()+footerRecordResp.fileUrl
+          if (footerRecordResp.status === 1){
 
-          this.showAlert('Footer Record','Record Added').then(() =>{
-            const footerMedia: any = this.eleRef.nativeElement.querySelector('.footerMedia')
-            footerMedia.classList.remove('nosite')
-            const fileRecordIpt: any = this.eleRef.nativeElement.querySelector('.fileRecordIpt')
-            fileRecordIpt.classList.add('nosite')
-          })
+            this.footerMedia = this.appHttp.getBaseLink()+footerRecordResp.fileUrl
 
-        }
+            this.showAlert('Footer Record','Record Added').then(() =>{
+              const footerMedia: any = this.eleRef.nativeElement.querySelector('.footerMedia')
+              footerMedia.classList.remove('nosite')
+              const fileRecordIpt: any = this.eleRef.nativeElement.querySelector('.fileRecordIpt')
+              fileRecordIpt.classList.add('nosite')
+            })
 
-      }).catch((err: any) =>{
+          }
 
-        console.error(err);
-        loadingEle.dismiss()
-        this.showAlert('Footer Record','Record Cretation Failed')
+        }).catch((err: any) =>{
+
+          console.error(err);
+          loadingEle.dismiss()
+          this.showAlert('Footer Record','Record Cretation Failed')
+
+        })
 
       })
-
     })
 
   }
@@ -336,6 +341,63 @@ export class FootersComponent implements OnInit {
 
       })
 
+    })
+
+  }
+
+  addRecordLabelForm(): Promise<any>{
+
+    return new Promise<any>((resolve, reject) => {
+
+      this.alertCtrl.create({
+        header: 'Footer Record Label',
+        buttons: [
+          {
+            text: 'Cancel',
+            role: 'cancel'
+          },
+          {
+            text: 'OK',
+            role: 'confirm',
+          },
+        ],
+        inputs:[
+          {
+            type: 'text',
+            placeholder: 'ORG LTD',
+            name:'recordLabel'
+          }
+        ]
+      }).then((recordLabelCreationAlert: HTMLIonAlertElement) => {
+
+        recordLabelCreationAlert.present().then(() =>{
+
+          recordLabelCreationAlert.onDidDismiss().then((recordLabelAdditionOverlay: any) =>{
+
+            const dataRole: any = recordLabelAdditionOverlay.role;
+
+            if (dataRole === 'confirm'){
+              this.imgFooterLabel = recordLabelAdditionOverlay.data.values.recordLabel;
+
+              this.showAlert('Record Label Added','Record Label').then(()=>{
+
+                resolve('')
+
+              });
+            }else{
+
+              this.showAlert('Record Not Added','Record Label').then(()=>{
+
+                resolve('')
+
+              });
+            };
+
+          });
+
+        });
+
+      });
     })
 
   }

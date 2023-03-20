@@ -60,7 +60,11 @@
                 <td style="padding: 10px;box-sizing: boader-box;" class="footerMedia nosite">
                   <div class="vWMFDImgHolder">
                       <img src="{{this.footerMedia}}" class="vWMFDImgTag"
-                      style="width: 110px;">
+                      style="width: 110px;"><br>
+                      <div *ngIf="this.imgFooterLabel!==''" style="width: 100%;
+                      display:flex;justify-content:center;align-items:center">
+                        {{this.imgFooterLabel}}
+                      </div>
                   </div>
                 </td>
 

@@ -537,6 +537,9 @@ export class MailsListComponent implements OnInit {
 
             if (Number(childElement.width)>window.innerWidth){
               childElement.width = 95+'%';
+              childElement.style.width = '95%'
+              childElement.style.maxWidth = '95%'
+              childElement.style.minWidth = '95%'
             }
           }
 
@@ -547,8 +550,6 @@ export class MailsListComponent implements OnInit {
       }
 
     }
-
-    console.log(parentChildStore);
 
     return initChildrenList
 

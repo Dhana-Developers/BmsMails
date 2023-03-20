@@ -25,7 +25,8 @@ export class MailsService {
 
   public footerRecord: any = {
     'id':0,
-    'value':''
+    'value':'',
+    'label':''
   }
 
   public chosenFooter: any = {
